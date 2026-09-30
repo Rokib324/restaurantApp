@@ -1,69 +1,121 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useCartStore } from '@/lib/store';
+import Hero from '@/components/Hero';
+import CategorySelector from '@/components/CategorySelector';
+import FoodGrid from '@/components/FoodGrid';
+import { motion } from 'framer-motion';
+
+export default function HomePage() {
+  const { activeCategory } = useCartStore();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      {/* Hero Section */}
+      <Hero />
+
+      {/* Menu Section */}
+      <section
+        id="menu-section"
+        className="container mx-auto px-6 lg:px-12 py-20"
+      >
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <span className="text-orange-400 text-sm font-semibold uppercase tracking-widest">
+            Explore Our Menu
+          </span>
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-white mt-3 mb-4">
+            What&apos;s
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+              {' '}Cooking Today?
+            </span>
+          </h2>
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Fresh ingredients, bold flavors, fast delivery. Order your favorite
+            meals and pay the way you like.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </motion.div>
+
+        {/* Category Selector */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-10"
+        >
+          <CategorySelector />
+        </motion.div>
+
+        {/* Food Grid */}
+        <FoodGrid activeCategory={activeCategory} />
+      </section>
+
+      {/* Why Choose Us */}
+      <section className="bg-white/2 border-y border-white/5 py-20">
+        <div className="container mx-auto px-6 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-14"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <h2 className="text-3xl lg:text-4xl font-extrabold text-white">
+              Why{' '}
+              <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                FoodieExpress?
+              </span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                icon: '⚡',
+                title: '30 Min Delivery',
+                desc: 'Hot food at your doorstep in 30 minutes or less.',
+              },
+              {
+                icon: '💳',
+                title: 'bKash & Nagad',
+                desc: 'Pay seamlessly with your favorite MFS provider.',
+              },
+              {
+                icon: '🌶️',
+                title: 'Authentic Flavors',
+                desc: 'From Desi wraps to international burgers and pizza.',
+              },
+              {
+                icon: '🛡️',
+                title: 'Safe & Hygienic',
+                desc: 'Every meal prepared in a certified clean kitchen.',
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex flex-col items-center text-center gap-4 p-8 bg-white/3 border border-white/8 rounded-3xl hover:border-orange-500/30 hover:bg-white/5 transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-3xl">
+                  {feature.icon}
+                </div>
+                <h3 className="text-white font-bold text-lg">{feature.title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }
