@@ -72,8 +72,6 @@ async function sendOrderNotification(order: {
 }
 
 // In-memory cache for GET
-let cache: { data: unknown; ts: number } | null = null;
-const CACHE_TTL = 60_000;
 
 export async function POST(request: NextRequest) {
   try {
@@ -114,8 +112,6 @@ export async function POST(request: NextRequest) {
       orderStatus: 'received',
     });
 
-    // Invalidate cache
-    cache = null;
 
     // Send push notification (awaited with 2.5s safety cap so customer response is never delayed)
     try {
@@ -152,16 +148,6 @@ export async function GET(request: NextRequest) {
         { success: false, error: 'Order ID is required' },
         { status: 400 }
       );
-    }
-
-    // Use cache if available and not stale
-    if (cache && Date.now() - cache.ts < CACHE_TTL) {
-      const cachedData = (cache.data as { _id: string }[]).find(
-        (o) => o._id === id
-      );
-      if (cachedData) {
-        return NextResponse.json({ success: true, data: cachedData }, { status: 200 });
-      }
     }
 
     const order = await Order.findById(id).lean();

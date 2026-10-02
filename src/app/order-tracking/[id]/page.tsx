@@ -83,30 +83,6 @@ export default function OrderTrackingPage({ params }: OrderTrackingPageProps) {
     return () => clearInterval(interval);
   }, [resolvedId, order?.orderStatus, fetchOrder]);
 
-  // Demo: Simulate status progression (for demo without real kitchen ops)
-  useEffect(() => {
-    if (!resolvedId || !order) return;
-    if (order.orderStatus === 'delivered') return;
-
-    const currentIndex = STATUS_SEQUENCE.indexOf(order.orderStatus);
-    if (currentIndex < STATUS_SEQUENCE.length - 1) {
-      const timer = setTimeout(async () => {
-        const nextStatus = STATUS_SEQUENCE[currentIndex + 1];
-        try {
-          await fetch('/api/webhook/payment', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId: resolvedId, orderStatus: nextStatus }),
-          });
-          fetchOrder();
-        } catch {
-          // silently fail in demo mode
-        }
-      }, 12000); // Progress every 12 seconds for demo
-
-      return () => clearTimeout(timer);
-    }
-  }, [resolvedId, order?.orderStatus, fetchOrder, order]);
 
   if (loading) {
     return (
