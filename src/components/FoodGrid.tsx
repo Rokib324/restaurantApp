@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,26 +19,27 @@ interface FoodItem {
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  hidden: { opacity: 0, y: 20, scale: 0.97 },
   visible: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, scale: 0.9, y: -10 },
+  exit: { opacity: 0, scale: 0.95, y: -10 },
 };
 
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.05 } },
 };
 
 interface FoodCardProps {
   item: FoodItem;
 }
 
-function FoodCard({ item }: FoodCardProps) {
-  const { addItem, items: cartItems } = useCartStore();
+const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
+  const addItem = useCartStore((s) => s.addItem);
+  const cartQty = useCartStore(
+    (s) => s.items.find((ci) => ci.id === item._id)?.quantity ?? 0
+  );
   const [imageHovered, setImageHovered] = useState(false);
   const [added, setAdded] = useState(false);
-
-  const cartQty = cartItems.find((ci) => ci.id === item._id)?.quantity ?? 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -52,15 +53,15 @@ function FoodCard({ item }: FoodCardProps) {
     };
     addItem(cartItem);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    setTimeout(() => setAdded(false), 1200);
   };
 
   return (
     <motion.div
       layout
       variants={itemVariants}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300"
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300"
     >
       <Link href={`/items/${item._id}`} className="block">
         {/* Image container */}
@@ -70,9 +71,9 @@ function FoodCard({ item }: FoodCardProps) {
           onMouseLeave={() => setImageHovered(false)}
         >
           <motion.div
-            animate={{ scale: imageHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="w-full h-full"
+            animate={{ scale: imageHovered ? 1.08 : 1 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="relative w-full h-full"
           >
             <Image
               src={item.imageUrl}
@@ -83,10 +84,10 @@ function FoodCard({ item }: FoodCardProps) {
             />
           </motion.div>
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
           {/* Category badge */}
-          <span className="absolute top-3 left-3 px-3 py-1 bg-black/50 backdrop-blur-sm border border-white/20 rounded-full text-white text-xs font-medium capitalize">
+          <span className="absolute top-3 left-3 px-3 py-1 bg-black/60 border border-white/20 rounded-full text-white text-xs font-medium capitalize">
             {item.category}
           </span>
 
@@ -95,7 +96,7 @@ function FoodCard({ item }: FoodCardProps) {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute top-3 right-3 w-6 h-6 bg-orange-500 rounded-full text-white text-xs font-bold flex items-center justify-center"
+              className="absolute top-3 right-3 w-6 h-6 bg-orange-500 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md"
             >
               {cartQty}
             </motion.span>
@@ -138,9 +139,9 @@ function FoodCard({ item }: FoodCardProps) {
         <motion.button
           id={`add-to-cart-${item._id}`}
           onClick={handleAddToCart}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
             added
               ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
               : 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40'
@@ -151,42 +152,55 @@ function FoodCard({ item }: FoodCardProps) {
       </div>
     </motion.div>
   );
-}
+});
 
 interface FoodGridProps {
   activeCategory: string;
 }
 
 export default function FoodGrid({ activeCategory }: FoodGridProps) {
-  const [items, setItems] = useState<FoodItem[]>([]);
+  const [allItems, setAllItems] = useState<FoodItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all items once on initial mount
   useEffect(() => {
+    let isMounted = true;
     const fetchItems = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        const url =
-          activeCategory === 'all'
-            ? '/api/items'
-            : `/api/items?category=${activeCategory}`;
-        const res = await fetch(url);
+        const res = await fetch('/api/items');
         const data = await res.json();
-        if (data.success) {
-          setItems(data.data);
-        } else {
-          setError(data.error ?? 'Failed to load items');
+        if (isMounted) {
+          if (data.success) {
+            setAllItems(data.data);
+          } else {
+            setError(data.error ?? 'Failed to load items');
+          }
         }
       } catch {
-        setError('Network error. Please try again.');
+        if (isMounted) {
+          setError('Network error. Please try again.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchItems();
-  }, [activeCategory]);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Instant in-memory filtering (0ms latency, zero re-fetching)
+  const filteredItems = useMemo(() => {
+    if (activeCategory === 'all') return allItems;
+    return allItems.filter(
+      (item) => item.category?.toLowerCase() === activeCategory.toLowerCase()
+    );
+  }, [allItems, activeCategory]);
 
   if (loading) {
     return (
@@ -216,7 +230,7 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
         <p className="text-red-400 text-lg">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-xl font-semibold"
+          className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-xl font-semibold cursor-pointer"
         >
           Retry
         </button>
@@ -224,7 +238,7 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
     );
   }
 
-  if (items.length === 0) {
+  if (filteredItems.length === 0) {
     return (
       <div className="text-center py-20">
         <div className="text-6xl mb-4">🍽️</div>
@@ -234,7 +248,7 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
   }
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="popLayout">
       <motion.div
         key={activeCategory}
         variants={containerVariants}
@@ -243,7 +257,7 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
         exit={{ opacity: 0 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <FoodCard key={item._id} item={item} />
         ))}
       </motion.div>

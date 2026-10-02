@@ -150,7 +150,7 @@ export default function ItemDetailPage({ params }: ItemDetailPageProps) {
               <motion.div
                 animate={{ scale: imageZoomed ? 1.12 : 1 }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="w-full h-full"
+                className="relative w-full h-full"
               >
                 <Image
                   src={item.imageUrl}

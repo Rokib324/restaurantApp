@@ -6,8 +6,10 @@ import { useCartStore } from '@/lib/store';
 import CartSidebar from '../CartSidebar';
 
 export default function Navbar() {
-  const { getTotalItems, toggleCart } = useCartStore();
-  const totalItems = getTotalItems();
+  const totalItems = useCartStore((s) =>
+    s.items.reduce((sum, item) => sum + item.quantity, 0)
+  );
+  const toggleCart = useCartStore((s) => s.toggleCart);
 
   return (
     <>
@@ -29,6 +31,9 @@ export default function Navbar() {
           {/* Nav Links */}
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-300">
             <Link href="/#menu-section" className="hover:text-orange-400 transition-colors">Menu</Link>
+            <Link href="/#locations-section" className="hover:text-orange-400 transition-colors flex items-center gap-1">
+              <span>📍</span> Locations
+            </Link>
             <Link href="/checkout" className="hover:text-orange-400 transition-colors">Checkout</Link>
             <a href="tel:+8801XXXXXXXXX" className="hover:text-orange-400 transition-colors">📞 Order by Phone</a>
           </div>

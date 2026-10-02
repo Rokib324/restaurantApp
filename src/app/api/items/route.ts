@@ -110,7 +110,7 @@ const SEED_ITEMS = [
     price: 60,
     category: 'drinks',
     description: 'Traditional Bangladeshi spiced yogurt drink with mint, cumin, and black pepper.',
-    imageUrl: 'https://images.unsplash.com/photo-1571950006418-f7d8c4dfca74?w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1546173159-315724a31696?w=600&q=80',
     tags: ['desi', 'traditional', 'spiced', 'popular'],
     isAvailable: true,
   },
@@ -140,7 +140,7 @@ const SEED_ITEMS = [
     price: 120,
     category: 'wraps',
     description: 'Spiced minced beef wrapped in a paratha with onions, green chilli and coriander chutney.',
-    imageUrl: 'https://images.unsplash.com/photo-1633945274417-7a5c06873a7b?w=600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&q=80',
     tags: ['beef', 'desi', 'spicy', 'popular'],
     isAvailable: true,
   },
@@ -166,29 +166,75 @@ const SEED_ITEMS = [
   },
 ];
 
+// In-memory cache for ultra-fast responses
+let cachedItems: any[] | null = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 60 * 1000; // 60 seconds
+let isSeeded = false;
+
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
+    const now = Date.now();
 
-    // Seed if empty
-    const count = await Item.countDocuments();
-    if (count === 0) {
-      await Item.insertMany(SEED_ITEMS);
+    // If cache is valid, serve directly from memory (0-1ms response)
+    if (cachedItems && now - lastCacheTime < CACHE_TTL_MS) {
+      let filtered = cachedItems;
+      if (category && category !== 'all') {
+        filtered = cachedItems.filter(
+          (item) => item.category?.toLowerCase() === category.toLowerCase()
+        );
+      }
+      return NextResponse.json(
+        { success: true, data: filtered },
+        {
+          status: 200,
+          headers: {
+            'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+          },
+        }
+      );
     }
 
-    const filter: Record<string, unknown> = { isAvailable: true };
+    await dbConnect();
+
+    // Seed once if needed
+    if (!isSeeded) {
+      const count = await Item.countDocuments();
+      if (count === 0) {
+        await Item.insertMany(SEED_ITEMS);
+      }
+      isSeeded = true;
+    }
+
+    // Fetch all available items to refresh cache
+    const allItems = await Item.find({ isAvailable: true }).sort({ createdAt: -1 }).lean();
+    cachedItems = allItems;
+    lastCacheTime = now;
+
+    let filtered = allItems;
     if (category && category !== 'all') {
-      filter.category = category.toLowerCase();
+      filtered = allItems.filter(
+        (item: any) => item.category?.toLowerCase() === category.toLowerCase()
+      );
     }
 
-    const items = await Item.find(filter).sort({ createdAt: -1 }).lean();
-
-    return NextResponse.json({ success: true, data: items }, { status: 200 });
+    return NextResponse.json(
+      { success: true, data: filtered },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error) {
     console.error('GET /api/items error:', error);
+    // If DB fails but we have stale cache, serve it
+    if (cachedItems) {
+      return NextResponse.json({ success: true, data: cachedItems }, { status: 200 });
+    }
     return NextResponse.json(
       { success: false, error: 'Failed to fetch items' },
       { status: 500 }

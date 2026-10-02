@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/ui/Navbar';
@@ -8,6 +8,10 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  themeColor: '#0a0a0a',
+};
 
 export const metadata: Metadata = {
   title: 'FoodieExpress BD | Fast Food Delivery in Dhaka',
@@ -20,7 +24,6 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_BD',
   },
-  themeColor: '#0a0a0a',
 };
 
 export default function RootLayout({

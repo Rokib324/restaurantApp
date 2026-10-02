@@ -146,20 +146,20 @@ export default function Hero() {
           {/* Rotating Ring */}
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="absolute w-[420px] h-[420px] lg:w-[520px] lg:h-[520px] rounded-full border-2 border-dashed border-orange-500/20"
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+            className="absolute w-[420px] h-[420px] lg:w-[520px] lg:h-[520px] rounded-full border-2 border-dashed border-orange-500/20 will-change-transform pointer-events-none"
           />
           <motion.div
             animate={{ rotate: -360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-            className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-red-500/10"
+            transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+            className="absolute w-[350px] h-[350px] lg:w-[450px] lg:h-[450px] rounded-full border border-red-500/10 will-change-transform pointer-events-none"
           />
 
           {/* Food Image */}
           <motion.div
-            animate={{ y: [0, -18, 0] }}
+            animate={{ y: [0, -14, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative w-[320px] h-[320px] lg:w-[420px] lg:h-[420px] rounded-full overflow-hidden border-4 border-orange-500/30 shadow-2xl shadow-orange-500/20"
+            className="relative w-[320px] h-[320px] lg:w-[420px] lg:h-[420px] rounded-full overflow-hidden border-4 border-orange-500/30 shadow-2xl shadow-orange-500/20 will-change-transform"
           >
             <Image
               src="/hero-food.jpg"
@@ -168,16 +168,17 @@ export default function Hero() {
               className="object-cover"
               priority
               fetchPriority="high"
+              sizes="(max-width: 1024px) 320px, 420px"
             />
             {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
           </motion.div>
 
-          {/* Floating Mini Cards */}
+          {/* Floating Mini Cards (GPU-accelerated without heavy backdrop-filter thrashing) */}
           <motion.div
             animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="absolute top-8 right-0 lg:-right-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white shadow-lg"
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+            className="absolute top-8 right-0 lg:-right-4 bg-gray-900/90 border border-white/20 rounded-2xl px-4 py-3 text-white shadow-xl will-change-transform"
           >
             <div className="flex items-center gap-2">
               <span className="text-2xl">🍔</span>
@@ -189,9 +190,9 @@ export default function Hero() {
           </motion.div>
 
           <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute bottom-12 left-0 lg:-left-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white shadow-lg"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+            className="absolute bottom-12 left-0 lg:-left-4 bg-gray-900/90 border border-white/20 rounded-2xl px-4 py-3 text-white shadow-xl will-change-transform"
           >
             <div className="flex items-center gap-2">
               <span className="text-2xl">🍕</span>
@@ -204,8 +205,8 @@ export default function Hero() {
 
           <motion.div
             animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-            className="absolute bottom-4 right-4 lg:right-0 bg-green-500/20 backdrop-blur-md border border-green-500/30 rounded-2xl px-4 py-3 text-white shadow-lg"
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+            className="absolute bottom-4 right-4 lg:right-0 bg-gray-900/90 border border-green-500/40 rounded-2xl px-4 py-3 text-white shadow-xl will-change-transform"
           >
             <div className="flex items-center gap-2">
               <span className="text-lg">✅</span>

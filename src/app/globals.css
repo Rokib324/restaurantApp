@@ -67,3 +67,43 @@ body {
 .btn-glow:hover {
   box-shadow: 0 0 35px rgba(249, 115, 22, 0.5);
 }
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+  background-color: #030712 !important;
+  font-family: inherit !important;
+}
+
+.custom-dark-popup .leaflet-popup-content-wrapper {
+  background: #111827 !important;
+  color: #fff !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7) !important;
+  padding: 6px !important;
+}
+
+.custom-dark-popup .leaflet-popup-tip {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.leaflet-bar {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-bar a {
+  background-color: #111827 !important;
+  color: #f3f4f6 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-bar a:hover {
+  background-color: #f97316 !important;
+  color: #ffffff !important;
+}
+

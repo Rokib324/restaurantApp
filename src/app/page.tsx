@@ -4,10 +4,11 @@ import { useCartStore } from '@/lib/store';
 import Hero from '@/components/Hero';
 import CategorySelector from '@/components/CategorySelector';
 import FoodGrid from '@/components/FoodGrid';
+import LocationsSection from '@/components/locations/LocationsSection';
 import { motion } from 'framer-motion';
 
 export default function HomePage() {
-  const { activeCategory } = useCartStore();
+  const activeCategory = useCartStore((s) => s.activeCategory);
 
   return (
     <>
@@ -56,6 +57,9 @@ export default function HomePage() {
         {/* Food Grid */}
         <FoodGrid activeCategory={activeCategory} />
       </section>
+
+      {/* Locations Map Section */}
+      <LocationsSection />
 
       {/* Why Choose Us */}
       <section className="bg-white/2 border-y border-white/5 py-20">
