@@ -1,7 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
+import PushSubscriptionModel from '@/models/PushSubscription';
 import { PaymentMethod } from '@/models/Order';
+import webpush from 'web-push';
+
+if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    `mailto:${process.env.VAPID_EMAIL || 'admin@example.com'}`,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+}
+
+async function sendOrderNotification(order: {
+  _id: unknown;
+  customerDetails: { name: string };
+  totalAmount: number;
+  items: { name: string; quantity: number }[];
+}) {
+  try {
+    const subscriptions = await PushSubscriptionModel.find({}).lean();
+    if (subscriptions.length === 0) return;
+
+    const itemsSummary = order.items
+      .slice(0, 2)
+      .map((i) => `${i.name} ×${i.quantity}`)
+      .join(', ');
+
+    const payload = JSON.stringify({
+      title: '🔔 New Order Received!',
+      body: `${order.customerDetails.name} ordered ${itemsSummary}${order.items.length > 2 ? ' +more' : ''} — ৳${order.totalAmount}`,
+      requireInteraction: true,
+      tag: `order-${order._id}`,
+      data: { url: '/admin', orderId: String(order._id) },
+    });
+
+    await Promise.allSettled(
+      subscriptions.map((sub) =>
+        webpush.sendNotification(
+          { endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth } },
+          payload
+        )
+      )
+    );
+  } catch (err) {
+    console.error('Push notification error:', err);
+  }
+}
+
+// In-memory cache for GET
+let cache: { data: unknown; ts: number } | null = null;
+const CACHE_TTL = 60_000;
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,9 +88,13 @@ export async function POST(request: NextRequest) {
       items,
       totalAmount,
       paymentMethod,
-      paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
+      paymentStatus: 'pending',
       orderStatus: 'received',
     });
+
+    // Invalidate cache & send push notification (non-blocking)
+    cache = null;
+    sendOrderNotification(order).catch(console.error);
 
     return NextResponse.json(
       { success: true, data: order },
@@ -67,6 +121,16 @@ export async function GET(request: NextRequest) {
         { success: false, error: 'Order ID is required' },
         { status: 400 }
       );
+    }
+
+    // Use cache if available and not stale
+    if (cache && Date.now() - cache.ts < CACHE_TTL) {
+      const cachedData = (cache.data as { _id: string }[]).find(
+        (o) => o._id === id
+      );
+      if (cachedData) {
+        return NextResponse.json({ success: true, data: cachedData }, { status: 200 });
+      }
     }
 
     const order = await Order.findById(id).lean();
