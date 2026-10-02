@@ -81,6 +81,7 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              unoptimized={item.imageUrl.startsWith('/uploads/')}
             />
           </motion.div>
           {/* Gradient overlay */}

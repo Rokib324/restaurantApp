@@ -88,6 +88,7 @@ export default function CartSidebar() {
                           fill
                           className="object-cover"
                           sizes="64px"
+                          unoptimized={item.imageUrl.startsWith('/uploads/')}
                         />
                       </div>
 

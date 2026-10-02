@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: '📊', id: 'nav-dashboard' },
   { href: '/admin/orders', label: 'Orders', icon: '🧾', id: 'nav-orders' },
   { href: '/admin/menu', label: 'Menu Items', icon: '🍔', id: 'nav-menu' },
+  { href: '/admin/categories', label: 'Categories', icon: '🏷️', id: 'nav-categories' },
   { href: '/admin/notifications', label: 'Notifications', icon: '🔔', id: 'nav-notifications' },
 ];
 

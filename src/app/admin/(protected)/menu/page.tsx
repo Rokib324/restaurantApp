@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
+import ImageUploadZone from '@/components/admin/ImageUploadZone';
 
 interface MenuItem {
   _id: string;
@@ -149,31 +151,12 @@ function ItemForm({
         />
       </div>
 
-      {/* Image URL */}
-      <div>
-        <label className="text-gray-300 text-xs font-semibold uppercase tracking-wide block mb-1.5">
-          Image URL
-        </label>
-        <input
-          type="url"
-          value={form.imageUrl}
-          onChange={(e) => onChange('imageUrl', e.target.value)}
-          placeholder="https://…"
-          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm outline-none focus:border-orange-500/50 transition-colors"
-        />
-        {form.imageUrl && (
-          <div className="mt-2 relative h-24 rounded-xl overflow-hidden bg-gray-800">
-            <Image
-              src={form.imageUrl}
-              alt="preview"
-              fill
-              className="object-cover"
-              sizes="400px"
-              onError={() => {}}
-            />
-          </div>
-        )}
-      </div>
+      {/* Image Upload Zone: Browse from files, Drag & Drop, or Paste (Ctrl+V) */}
+      <ImageUploadZone
+        value={form.imageUrl}
+        onChange={(url) => onChange('imageUrl', url)}
+        label="Food Item Photo"
+      />
 
       {/* Tags */}
       <div>
@@ -256,11 +239,19 @@ export default function AdminMenuPage() {
   // Availability toggling
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
+  // Categories from DB
+  const [dbCategories, setDbCategories] = useState<{ slug: string; name: string }[]>([]);
+
   const fetchItems = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/items');
-      const data = await res.json();
-      if (data.success) setItems(data.data);
+      const [resItems, resCats] = await Promise.all([
+        fetch('/api/admin/items'),
+        fetch('/api/categories'),
+      ]);
+      const dataItems = await resItems.json();
+      const dataCats = await resCats.json();
+      if (dataItems.success) setItems(dataItems.data);
+      if (dataCats.success && Array.isArray(dataCats.data)) setDbCategories(dataCats.data);
     } catch (e) {
       console.error(e);
     } finally {
@@ -272,7 +263,10 @@ export default function AdminMenuPage() {
     fetchItems();
   }, [fetchItems]);
 
-  const categories = ['all', ...Array.from(new Set(items.map((i) => i.category))).sort()];
+  const categories = [
+    'all',
+    ...Array.from(new Set([...dbCategories.map((c) => c.slug), ...items.map((i) => i.category)])).sort(),
+  ];
 
   const filteredItems = items.filter((item) => {
     const matchCat = filterCategory === 'all' || item.category === filterCategory;
@@ -410,15 +404,25 @@ export default function AdminMenuPage() {
                 {items.length} items · {items.filter((i) => !i.isAvailable).length} unavailable
               </p>
             </div>
-            <motion.button
-              id="add-menu-item-btn"
-              onClick={() => { setShowAdd(true); setAddError(''); }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-2xl shadow-lg shadow-orange-500/20 text-sm"
-            >
-              ＋ Add Item
-            </motion.button>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/categories"
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold rounded-2xl text-sm transition-colors"
+                title="Manage categories"
+              >
+                <span>🏷️</span>
+                <span>Manage Categories</span>
+              </Link>
+              <motion.button
+                id="add-menu-item-btn"
+                onClick={() => { setShowAdd(true); setAddError(''); }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-2xl shadow-lg shadow-orange-500/20 text-sm"
+              >
+                ＋ Add Item
+              </motion.button>
+            </div>
           </div>
         </motion.div>
 
@@ -503,6 +507,7 @@ export default function AdminMenuPage() {
                             fill
                             className={`object-cover ${!item.isAvailable ? 'grayscale' : ''}`}
                             sizes="48px"
+                            unoptimized={item.imageUrl.startsWith('/uploads/')}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-xl">🍽️</div>
@@ -582,7 +587,14 @@ export default function AdminMenuPage() {
                     <div className="flex md:hidden items-start gap-3 p-4">
                       <div className="w-14 h-14 relative rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
                         {item.imageUrl ? (
-                          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" sizes="56px" />
+                          <Image
+                            src={item.imageUrl}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                            sizes="56px"
+                            unoptimized={item.imageUrl.startsWith('/uploads/')}
+                          />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
                         )}
@@ -674,7 +686,14 @@ export default function AdminMenuPage() {
           <div className="text-center space-y-4">
             {deleteItem.imageUrl && (
               <div className="relative h-32 rounded-2xl overflow-hidden mx-auto max-w-xs">
-                <Image src={deleteItem.imageUrl} alt={deleteItem.name} fill className="object-cover opacity-60" sizes="300px" />
+                <Image
+                  src={deleteItem.imageUrl}
+                  alt={deleteItem.name}
+                  fill
+                  className="object-cover opacity-60"
+                  sizes="300px"
+                  unoptimized={deleteItem.imageUrl.startsWith('/uploads/')}
+                />
               </div>
             )}
             <p className="text-white font-semibold text-lg">{deleteItem.name}</p>

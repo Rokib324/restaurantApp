@@ -159,6 +159,7 @@ export default function ItemDetailPage({ params }: ItemDetailPageProps) {
                   className="object-cover"
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
+                  unoptimized={item.imageUrl.startsWith('/uploads/')}
                 />
               </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />

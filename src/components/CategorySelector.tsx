@@ -1,9 +1,16 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/lib/store';
 
-const CATEGORIES = [
+interface CategoryItem {
+  id: string;
+  label: string;
+  emoji: string;
+}
+
+const DEFAULT_CATEGORIES: CategoryItem[] = [
   { id: 'all', label: 'All Items', emoji: '🍽️' },
   { id: 'burgers', label: 'Burgers', emoji: '🍔' },
   { id: 'pizza', label: 'Pizza', emoji: '🍕' },
@@ -15,20 +22,51 @@ const CATEGORIES = [
 
 export default function CategorySelector() {
   const { activeCategory, setActiveCategory } = useCartStore();
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadCategories() {
+      try {
+        const res = await fetch('/api/categories');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const dynamicCats: CategoryItem[] = [
+            { id: 'all', label: 'All Items', emoji: '🍽️' },
+            ...data.data.map((cat: { slug: string; name: string; emoji?: string }) => ({
+              id: cat.slug,
+              label: cat.name,
+              emoji: cat.emoji || '🍽️',
+            })),
+          ];
+          if (mounted) {
+            setCategories(dynamicCats);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic categories:', err);
+      }
+    }
+
+    loadCategories();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-      {CATEGORIES.map((cat, index) => {
+      {categories.map((cat, index) => {
         const isActive = activeCategory === cat.id;
         return (
           <motion.button
             key={cat.id}
             id={`category-btn-${cat.id}`}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.07, duration: 0.5 }}
+            transition={{ delay: index * 0.04, duration: 0.3 }}
             onClick={() => setActiveCategory(cat.id)}
-            whileHover={{ scale: 1.06, y: -2 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.96 }}
             className={`
               relative flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm
