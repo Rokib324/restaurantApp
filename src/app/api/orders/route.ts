@@ -5,23 +5,34 @@ import PushSubscriptionModel from '@/models/PushSubscription';
 import { PaymentMethod } from '@/models/Order';
 import webpush from 'web-push';
 
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(
-    `mailto:${process.env.VAPID_EMAIL || 'admin@example.com'}`,
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+function initWebPush() {
+  const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const priv = process.env.VAPID_PRIVATE_KEY;
+  const email = process.env.VAPID_EMAIL || 'admin@foodieexpress.bd';
+  if (pub && priv) {
+    webpush.setVapidDetails(`mailto:${email}`, pub, priv);
+    return true;
+  }
+  return false;
 }
 
 async function sendOrderNotification(order: {
   _id: unknown;
-  customerDetails: { name: string };
+  customerDetails: { name: string; phone?: string; address?: string };
   totalAmount: number;
   items: { name: string; quantity: number }[];
 }) {
   try {
+    if (!initWebPush()) {
+      console.warn('VAPID keys not configured, skipping push notification');
+      return;
+    }
+
     const subscriptions = await PushSubscriptionModel.find({}).lean();
-    if (subscriptions.length === 0) return;
+    if (subscriptions.length === 0) {
+      console.log('No push subscribers registered in database.');
+      return;
+    }
 
     const itemsSummary = order.items
       .slice(0, 2)
@@ -33,19 +44,30 @@ async function sendOrderNotification(order: {
       body: `${order.customerDetails.name} ordered ${itemsSummary}${order.items.length > 2 ? ' +more' : ''} — ৳${order.totalAmount}`,
       requireInteraction: true,
       tag: `order-${order._id}`,
-      data: { url: '/admin', orderId: String(order._id) },
+      data: { url: '/admin/orders', orderId: String(order._id) },
     });
 
+    console.log(`[Push Notification] Dispatching to ${subscriptions.length} subscriber(s)...`);
+
     await Promise.allSettled(
-      subscriptions.map((sub) =>
-        webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth } },
-          payload
-        )
-      )
+      subscriptions.map(async (sub) => {
+        try {
+          await webpush.sendNotification(
+            { endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth } },
+            payload
+          );
+        } catch (err: unknown) {
+          const status = (err as { statusCode?: number }).statusCode;
+          if (status === 404 || status === 410) {
+            // Subscription expired or unregistered; clean up from DB
+            await PushSubscriptionModel.deleteOne({ endpoint: sub.endpoint });
+          }
+          throw err;
+        }
+      })
     );
   } catch (err) {
-    console.error('Push notification error:', err);
+    console.error('Push notification dispatch error:', err);
   }
 }
 
@@ -92,9 +114,18 @@ export async function POST(request: NextRequest) {
       orderStatus: 'received',
     });
 
-    // Invalidate cache & send push notification (non-blocking)
+    // Invalidate cache
     cache = null;
-    sendOrderNotification(order).catch(console.error);
+
+    // Send push notification (awaited with 2.5s safety cap so customer response is never delayed)
+    try {
+      await Promise.race([
+        sendOrderNotification(order),
+        new Promise((resolve) => setTimeout(resolve, 2500)),
+      ]);
+    } catch (e) {
+      console.error('Notification trigger error:', e);
+    }
 
     return NextResponse.json(
       { success: true, data: order },

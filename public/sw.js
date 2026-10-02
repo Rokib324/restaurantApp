@@ -1,45 +1,76 @@
 // FoodieExpress Push Notification Service Worker
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
 
-  let data;
-  try {
-    data = event.data.json();
-  } catch {
-    data = { title: 'New Order!', body: event.data.text() };
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('push', (event) => {
+  let data = { title: '🔔 New Order Received!', body: 'A new order has been placed on FoodieExpress.' };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data = { title: '🔔 New Order Received!', body: event.data.text() };
+    }
   }
 
+  const title = data.title || '🔔 New Order Received!';
   const options = {
-    body: data.body || 'You have a new notification',
+    body: data.body || 'A new order has been placed.',
     icon: '/icon-192.png',
     badge: '/icon-192.png',
-    tag: data.tag || 'foodie-notification',
+    tag: data.tag || `order-${Date.now()}`,
     renotify: true,
-    requireInteraction: data.requireInteraction || false,
-    data: data.data || {},
-    actions: data.actions || [],
-    vibrate: [200, 100, 200],
+    requireInteraction: true,
+    data: data.data || { url: '/admin/orders' },
+    actions: [
+      { action: 'open_orders', title: '👀 View Order' },
+    ],
+    vibrate: [300, 100, 300, 100, 400],
   };
 
-  event.waitUntil(
-    self.registration.showNotification(data.title || 'FoodieExpress', options)
-  );
+  // 1. Show native OS push notification
+  const notificationPromise = self.registration.showNotification(title, options).catch((err) => {
+    console.error('ServiceWorker showNotification error:', err);
+  });
+
+  // 2. Broadcast to all open admin windows so they can immediately play sound & refresh live data
+  const broadcastPromise = self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({
+        type: 'PUSH_ORDER_RECEIVED',
+        payload: data,
+      });
+    });
+  }).catch((err) => {
+    console.error('ServiceWorker broadcast error:', err);
+  });
+
+  event.waitUntil(Promise.all([notificationPromise, broadcastPromise]));
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const urlToOpen = event.notification.data?.url || '/admin';
+  const urlToOpen = event.notification.data?.url || '/admin/orders';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if (client.url.includes('/admin') && 'focus' in client) {
+          if ('navigate' in client) {
+            client.navigate(urlToOpen);
+          }
           return client.focus();
         }
       }
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(urlToOpen);
       }
     })
   );
