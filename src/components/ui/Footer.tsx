@@ -1,17 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import BrandLogo from './BrandLogo';
 import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 import { splitBrandName } from '@/config/site';
+import { RestaurantLocation } from '@/data/locations';
 
 export default function Footer() {
   const site = useSiteSettings();
-  const [showContactModal, setShowContactModal] = useState(false);
+  const [locations, setLocations] = useState<RestaurantLocation[]>([]);
   const currentYear = new Date().getFullYear();
   const [nameStart, nameHighlight, nameEnd] = splitBrandName(site.name, site.nameHighlight);
+
+  useEffect(() => {
+    fetch('/api/locations')
+      .then((res) => res.json())
+      .then((d) => {
+        if (d.success && Array.isArray(d.data)) {
+          setLocations(d.data.slice(0, 3));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const primaryPhone = locations[0]?.phone || '+880 1711-001122';
 
   return (
     <>
@@ -99,27 +112,44 @@ export default function Footer() {
                 Dhaka Hubs & Hours
               </h4>
               <ul className="space-y-2.5 text-xs text-gray-300">
-                <li className="flex items-start gap-2">
-                  <span className="text-orange-400 mt-0.5">📍</span>
-                  <div>
-                    <strong className="text-white">Gulshan 2 Flagship</strong> (24/7 Delivery)
-                    <p className="text-gray-500 text-[11px]">Plot 12, Road 71, Gulshan 2</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-orange-400 mt-0.5">📍</span>
-                  <div>
-                    <strong className="text-white">Dhanmondi Hub</strong> (11am – 12am)
-                    <p className="text-gray-500 text-[11px]">Satmasjid Road (Near Dhanmondi 27)</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-orange-400 mt-0.5">📍</span>
-                  <div>
-                    <strong className="text-white">Banani 11 & Uttara Hubs</strong>
-                    <p className="text-gray-500 text-[11px]">Road 11, Banani & Sector 7, Uttara</p>
-                  </div>
-                </li>
+                {locations.length > 0 ? (
+                  locations.map((loc) => (
+                    <li key={loc.id || loc.slug} className="flex items-start gap-2">
+                      <span className="text-orange-400 mt-0.5">📍</span>
+                      <div>
+                        <strong className="text-white">{loc.name}</strong>{' '}
+                        <span className="text-gray-400 text-[11px]">({loc.hours})</span>
+                        <p className="text-gray-500 text-[11px] truncate max-w-[220px]">
+                          {loc.address}
+                        </p>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 mt-0.5">📍</span>
+                      <div>
+                        <strong className="text-white">Gulshan 2 Flagship</strong> (24/7 Delivery)
+                        <p className="text-gray-500 text-[11px]">Plot 12, Road 71, Gulshan 2</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 mt-0.5">📍</span>
+                      <div>
+                        <strong className="text-white">Dhanmondi Hub</strong> (11am – 12am)
+                        <p className="text-gray-500 text-[11px]">Satmasjid Road (Near Dhanmondi 27)</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 mt-0.5">📍</span>
+                      <div>
+                        <strong className="text-white">Banani 11 & Uttara Hubs</strong>
+                        <p className="text-gray-500 text-[11px]">Road 11, Banani & Sector 7, Uttara</p>
+                      </div>
+                    </li>
+                  </>
+                )}
               </ul>
               <Link
                 href="/#locations-section"
@@ -138,11 +168,11 @@ export default function Footer() {
               <div className="bg-white/5 border border-white/8 rounded-2xl p-4 space-y-2">
                 <p className="text-xs text-gray-400 font-medium">Order Hotline (10am – 2am):</p>
                 <a
-                  href="tel:+8801711001122"
+                  href={`tel:${primaryPhone}`}
                   className="text-base font-extrabold text-white hover:text-orange-400 transition-colors flex items-center gap-2"
                 >
                   <span className="text-orange-400">📞</span>
-                  <span>+880 1711-001122</span>
+                  <span>{primaryPhone}</span>
                 </a>
                 <p className="text-[11px] text-gray-500 pt-1">
                   Average delivery speed: 25–35 minutes across Dhaka metro.
