@@ -3,11 +3,12 @@ import { getAdminFromCookies } from '@/lib/adminAuth';
 import dbConnect from '@/lib/db';
 import PushSubscriptionModel from '@/models/PushSubscription';
 import webpush from 'web-push';
+import { getSiteSettings } from '@/lib/siteSettings';
 
-function initWebPush() {
+async function initWebPush() {
   const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   const priv = process.env.VAPID_PRIVATE_KEY;
-  const email = process.env.VAPID_EMAIL || 'admin@foodieexpress.bd';
+  const email = process.env.VAPID_EMAIL || (await getSiteSettings()).email;
   if (pub && priv) {
     webpush.setVapidDetails(`mailto:${email}`, pub, priv);
     return true;
@@ -19,7 +20,7 @@ function initWebPush() {
 export async function GET() {
   try {
     await dbConnect();
-    const hasVapid = initWebPush();
+    const hasVapid = (await initWebPush());
     const count = await PushSubscriptionModel.countDocuments();
     return NextResponse.json({
       success: true,
@@ -86,7 +87,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     await dbConnect();
-    initWebPush();
+    (await initWebPush());
 
     const { title, body, data } = await request.json();
     const subscriptions = await PushSubscriptionModel.find({}).lean();
@@ -101,7 +102,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const payload = JSON.stringify({
-      title: title || '🔔 FoodieExpress Notification',
+      title: title || `🔔 ${(await getSiteSettings()).name} Notification`,
       body: body || 'New order notification test',
       requireInteraction: true,
       tag: `test-${Date.now()}`,

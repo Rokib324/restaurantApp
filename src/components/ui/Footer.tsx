@@ -3,10 +3,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import BrandLogo from './BrandLogo';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
+import { splitBrandName } from '@/config/site';
 
 export default function Footer() {
+  const site = useSiteSettings();
   const [showContactModal, setShowContactModal] = useState(false);
   const currentYear = new Date().getFullYear();
+  const [nameStart, nameHighlight, nameEnd] = splitBrandName(site.name, site.nameHighlight);
 
   return (
     <>
@@ -22,14 +27,16 @@ export default function Footer() {
             <div className="lg:col-span-4 space-y-4">
               <Link href="/" className="inline-flex items-center gap-3 group">
                 <div className="w-11 h-11 bg-gradient-to-tr from-orange-500 to-red-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform">
-                  🍽️
+                  <BrandLogo size={28} />
                 </div>
                 <div>
                   <span className="text-xl font-extrabold text-white tracking-tight block">
-                    Foodie<span className="text-orange-400">Express</span>
+                    {nameStart}
+                    {nameHighlight && <span className="text-orange-400">{nameHighlight}</span>}
+                    {nameEnd}
                   </span>
                   <span className="text-[11px] text-gray-500 uppercase tracking-widest font-semibold block">
-                    Fast Delivery · Dhaka
+                    {site.tagline}
                   </span>
                 </div>
               </Link>
@@ -166,7 +173,7 @@ export default function Footer() {
           <div className="mt-12 pt-6 border-t border-white/8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-500">
             {/* Left side: Copyright */}
             <p className="text-center md:text-left">
-              © {currentYear} FoodieExpress Bangladesh Ltd. All rights reserved.
+              © {currentYear} {site.legalName} All rights reserved.
             </p>
 
             {/* Middle: Developer Signature */}

@@ -1,5 +1,6 @@
 export interface RestaurantLocation {
   id: string;
+  /** Branch name without the brand (brand name is prefixed at render time) */
   name: string;
   slug: string;
   area: string;
@@ -19,7 +20,7 @@ export interface RestaurantLocation {
 export const RESTAURANT_LOCATIONS: RestaurantLocation[] = [
   {
     id: 'gulshan-flagship',
-    name: 'FoodieExpress Gulshan Flagship',
+    name: 'Gulshan Flagship',
     slug: 'gulshan-flagship',
     area: 'Gulshan 2',
     address: 'Plot 12, Road 71, Gulshan 2, Dhaka 1212',
@@ -36,7 +37,7 @@ export const RESTAURANT_LOCATIONS: RestaurantLocation[] = [
   },
   {
     id: 'dhanmondi-hub',
-    name: 'FoodieExpress Dhanmondi',
+    name: 'Dhanmondi',
     slug: 'dhanmondi',
     area: 'Dhanmondi',
     address: 'House 44, Satmasjid Road (Near Dhanmondi 27), Dhaka 1209',
@@ -53,7 +54,7 @@ export const RESTAURANT_LOCATIONS: RestaurantLocation[] = [
   },
   {
     id: 'banani-express',
-    name: 'FoodieExpress Banani 11',
+    name: 'Banani 11',
     slug: 'banani',
     area: 'Banani',
     address: 'Road 11, Block D, Banani, Dhaka 1213',
@@ -70,7 +71,7 @@ export const RESTAURANT_LOCATIONS: RestaurantLocation[] = [
   },
   {
     id: 'uttara-sector7',
-    name: 'FoodieExpress Uttara',
+    name: 'Uttara',
     slug: 'uttara',
     area: 'Uttara',
     address: 'Sector 7, Rabindra Sarani, Uttara Model Town, Dhaka 1230',
@@ -87,7 +88,7 @@ export const RESTAURANT_LOCATIONS: RestaurantLocation[] = [
   },
   {
     id: 'mirpur-10',
-    name: 'FoodieExpress Mirpur 10',
+    name: 'Mirpur 10',
     slug: 'mirpur',
     area: 'Mirpur',
     address: 'Mirpur 10 Roundabout (Opposite Fire Service), Dhaka 1216',

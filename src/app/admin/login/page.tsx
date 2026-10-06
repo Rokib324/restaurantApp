@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import BrandLogo from '@/components/ui/BrandLogo';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 export default function AdminLoginPage() {
+  const site = useSiteSettings();
   const router = useRouter();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
@@ -55,10 +58,10 @@ export default function AdminLoginPage() {
           {/* Logo / Icon */}
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-lg shadow-orange-500/30 mb-5">
-              🍽️
+              <BrandLogo size={48} />
             </div>
             <h1 className="text-white text-3xl font-extrabold">Admin Panel</h1>
-            <p className="text-gray-400 text-sm mt-2">FoodieExpress Restaurant</p>
+            <p className="text-gray-400 text-sm mt-2">{site.name} Restaurant</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

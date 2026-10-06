@@ -1,4 +1,4 @@
-// FoodieExpress Push Notification Service Worker
+// Push Notification Service Worker (brand-neutral — titles/bodies come from the server payload)
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -9,7 +9,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-  let data = { title: '🔔 New Order Received!', body: 'A new order has been placed on FoodieExpress.' };
+  let data = { title: '🔔 New Order Received!', body: 'A new order has been placed.' };
 
   if (event.data) {
     try {

@@ -4,11 +4,12 @@ import Order from '@/models/Order';
 import PushSubscriptionModel from '@/models/PushSubscription';
 import { PaymentMethod } from '@/models/Order';
 import webpush from 'web-push';
+import { getSiteSettings } from '@/lib/siteSettings';
 
-function initWebPush() {
+async function initWebPush() {
   const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   const priv = process.env.VAPID_PRIVATE_KEY;
-  const email = process.env.VAPID_EMAIL || 'admin@foodieexpress.bd';
+  const email = process.env.VAPID_EMAIL || (await getSiteSettings()).email;
   if (pub && priv) {
     webpush.setVapidDetails(`mailto:${email}`, pub, priv);
     return true;
@@ -23,7 +24,7 @@ async function sendOrderNotification(order: {
   items: { name: string; quantity: number }[];
 }) {
   try {
-    if (!initWebPush()) {
+    if (!(await initWebPush())) {
       console.warn('VAPID keys not configured, skipping push notification');
       return;
     }

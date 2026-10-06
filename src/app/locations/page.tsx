@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
 import LocationsSection from '@/components/locations/LocationsSection';
 import Link from 'next/link';
+import { getSiteSettings } from '@/lib/siteSettings';
 
-export const metadata: Metadata = {
-  title: 'Our Restaurant Locations in Dhaka | FoodieExpress BD',
-  description:
-    'Find FoodieExpress restaurant locations across Dhaka: Gulshan, Dhanmondi, Banani, Uttara, and Mirpur. Dine-in, takeaway, and 24/7 delivery.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSiteSettings();
+  return {
+    title: `Our Restaurant Locations in Dhaka | ${site.name}`,
+    description: `Find ${site.name} restaurant locations across Dhaka: Gulshan, Dhanmondi, Banani, Uttara, and Mirpur. Dine-in, takeaway, and 24/7 delivery.`,
+  };
+}
 
 export default function LocationsPage() {
   return (

@@ -4,6 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RESTAURANT_LOCATIONS, RestaurantLocation } from '@/data/locations';
 import RestaurantMap from './RestaurantMap';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 // Calculate distance in kilometers between two geo coordinates
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -21,8 +22,14 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 export default function LocationsSection() {
+  const { name: brandName } = useSiteSettings();
+  // Prefix each branch with the restaurant's brand name from admin settings
+  const locations = useMemo(
+    () => RESTAURANT_LOCATIONS.map((loc) => ({ ...loc, name: `${brandName} ${loc.name}` })),
+    [brandName]
+  );
   const [activeLocation, setActiveLocation] = useState<RestaurantLocation>(
-    RESTAURANT_LOCATIONS[0]
+    locations[0]
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | '24/7' | 'dine-in' | 'drive-thru'>('all');
@@ -32,7 +39,7 @@ export default function LocationsSection() {
 
   // Filter locations based on search and feature tags
   const filteredLocations = useMemo(() => {
-    return RESTAURANT_LOCATIONS.filter((loc) => {
+    return locations.filter((loc) => {
       const matchesSearch =
         searchQuery === '' ||
         loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -47,7 +54,7 @@ export default function LocationsSection() {
 
       return matchesSearch && matchesFilter;
     });
-  }, [searchQuery, filterType]);
+  }, [locations, searchQuery, filterType]);
 
   // Handle Find Nearest Branch via Geolocation
   const handleFindNearest = () => {
@@ -66,10 +73,10 @@ export default function LocationsSection() {
         setUserLocation({ lat: userLat, lng: userLng });
 
         // Find nearest branch
-        let nearestLoc = RESTAURANT_LOCATIONS[0];
+        let nearestLoc = locations[0];
         let minDistance = Infinity;
 
-        RESTAURANT_LOCATIONS.forEach((loc) => {
+        locations.forEach((loc) => {
           const dist = calculateDistance(userLat, userLng, loc.coordinates[0], loc.coordinates[1]);
           if (dist < minDistance) {
             minDistance = dist;

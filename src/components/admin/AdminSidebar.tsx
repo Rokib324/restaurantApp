@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import BrandLogo from '@/components/ui/BrandLogo';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: '📊', id: 'nav-dashboard' },
@@ -11,9 +13,11 @@ const NAV_ITEMS = [
   { href: '/admin/menu', label: 'Menu Items', icon: '🍔', id: 'nav-menu' },
   { href: '/admin/categories', label: 'Categories', icon: '🏷️', id: 'nav-categories' },
   { href: '/admin/notifications', label: 'Notifications', icon: '🔔', id: 'nav-notifications' },
+  { href: '/admin/settings', label: 'Brand Settings', icon: '⚙️', id: 'nav-settings' },
 ];
 
 export default function AdminSidebar() {
+  const site = useSiteSettings();
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -32,10 +36,10 @@ export default function AdminSidebar() {
       <div className="px-6 py-6 border-b border-white/8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-orange-500/30">
-            🍽️
+            <BrandLogo size={24} />
           </div>
           <div>
-            <p className="text-white font-bold text-sm">FoodieExpress</p>
+            <p className="text-white font-bold text-sm">{site.name}</p>
             <p className="text-gray-500 text-xs">Admin Panel</p>
           </div>
         </div>

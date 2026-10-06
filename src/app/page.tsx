@@ -6,8 +6,10 @@ import CategorySelector from '@/components/CategorySelector';
 import FoodGrid from '@/components/FoodGrid';
 import LocationsSection from '@/components/locations/LocationsSection';
 import { motion } from 'framer-motion';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 export default function HomePage() {
+  const site = useSiteSettings();
   const activeCategory = useCartStore((s) => s.activeCategory);
 
   return (
@@ -74,7 +76,7 @@ export default function HomePage() {
             <h2 className="text-3xl lg:text-4xl font-extrabold text-white">
               Why{' '}
               <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                FoodieExpress?
+                {site.name}?
               </span>
             </h2>
           </motion.div>

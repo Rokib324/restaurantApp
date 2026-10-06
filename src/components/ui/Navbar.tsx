@@ -4,8 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store';
 import CartSidebar from '../CartSidebar';
+import BrandLogo from './BrandLogo';
+import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
 export default function Navbar() {
+  const site = useSiteSettings();
   const totalItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0)
   );
@@ -22,9 +25,9 @@ export default function Navbar() {
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-extrabold text-xl">
-            <span className="text-2xl">🍔</span>
+            <BrandLogo size={32} className="text-2xl" />
             <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-              FoodieExpress
+              {site.name}
             </span>
           </Link>
 
