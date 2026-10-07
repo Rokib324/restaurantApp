@@ -11,7 +11,11 @@ export function normalizeSettings(raw: Partial<Record<string, unknown>> | null |
   if (!raw) return out;
   for (const field of SITE_SETTINGS_FIELDS) {
     const v = raw[field];
-    if (typeof v === 'string') out[field] = v;
+    if (typeof v === 'string') {
+      (out as Record<string, unknown>)[field] = v;
+    } else if (typeof v === 'boolean') {
+      (out as Record<string, unknown>)[field] = v;
+    }
   }
   return out;
 }

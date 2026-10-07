@@ -15,7 +15,7 @@ export async function GET() {
   try {
     await dbConnect();
     const doc = await SiteSettings.findOne({ key: 'global' }).lean();
-    return NextResponse.json({ success: true, data: normalizeSettings(doc as Record<string, unknown> | null) });
+    return NextResponse.json({ success: true, data: normalizeSettings(doc as unknown as Record<string, unknown> | null) });
   } catch (error) {
     console.error('Admin GET /settings error:', error);
     return NextResponse.json({ success: false, error: 'Failed to load settings' }, { status: 500 });
@@ -31,10 +31,14 @@ export async function PUT(request: NextRequest) {
   try {
     const body = (await request.json()) as Partial<Record<string, unknown>>;
 
-    // Only accept known string fields
+    // Accept known string and boolean fields
     const update: Partial<SiteSettingsData> = {};
     for (const field of SITE_SETTINGS_FIELDS) {
-      if (typeof body[field] === 'string') update[field] = (body[field] as string).trim();
+      if (typeof body[field] === 'string') {
+        (update as Record<string, unknown>)[field] = (body[field] as string).trim();
+      } else if (typeof body[field] === 'boolean') {
+        (update as Record<string, unknown>)[field] = body[field];
+      }
     }
 
     // Validation
@@ -68,3 +72,45 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: false, error: 'Failed to save settings' }, { status: 500 });
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  const isAdmin = await getAdminFromCookies();
+  if (!isAdmin) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = (await request.json()) as Partial<Record<string, unknown>>;
+    const update: Partial<SiteSettingsData> = {};
+    for (const field of SITE_SETTINGS_FIELDS) {
+      if (typeof body[field] === 'string') {
+        (update as Record<string, unknown>)[field] = (body[field] as string).trim();
+      } else if (typeof body[field] === 'boolean') {
+        (update as Record<string, unknown>)[field] = body[field];
+      }
+    }
+
+    if (Object.keys(update).length === 0) {
+      return NextResponse.json({ success: false, error: 'No valid fields provided' }, { status: 400 });
+    }
+
+    await dbConnect();
+    const doc = await SiteSettings.findOneAndUpdate(
+      { key: 'global' },
+      { $set: update, $setOnInsert: { key: 'global' } },
+      { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
+    ).lean();
+
+    revalidateTag(SITE_SETTINGS_TAG, { expire: 0 });
+    revalidatePath('/', 'layout');
+
+    return NextResponse.json({
+      success: true,
+      data: normalizeSettings(doc as unknown as Record<string, unknown> | null),
+    });
+  } catch (error) {
+    console.error('Admin PATCH /settings error:', error);
+    return NextResponse.json({ success: false, error: 'Failed to update settings' }, { status: 500 });
+  }
+}
+

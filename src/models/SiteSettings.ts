@@ -21,9 +21,16 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     logoUrl: { type: String, default: d.logoUrl, trim: true },
     logoEmoji: { type: String, default: d.logoEmoji, trim: true, maxlength: 16 },
     email: { type: String, default: d.email, trim: true, lowercase: true },
+    isKitchenOpen: { type: Boolean, default: d.isKitchenOpen },
+    kitchenOpenText: { type: String, default: d.kitchenOpenText, trim: true, maxlength: 80 },
+    kitchenClosedText: { type: String, default: d.kitchenClosedText, trim: true, maxlength: 80 },
   },
   { timestamps: true }
 );
+
+if (mongoose.models.SiteSettings) {
+  delete (mongoose.models as Record<string, unknown>).SiteSettings;
+}
 
 const SiteSettings: Model<ISiteSettings> =
   mongoose.models.SiteSettings ||

@@ -269,6 +269,66 @@ export default function BrandSettingsForm({ initial }: { initial: SiteSettingsDa
             </div>
           </section>
 
+          {/* Kitchen Operations */}
+          <section className="bg-white/5 border border-white/8 rounded-3xl p-6 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-white font-extrabold text-lg flex items-center gap-2">🍳 Kitchen Status</h2>
+                <p className="text-gray-400 text-xs mt-0.5">Control whether your kitchen shows as open or closed on the website footer.</p>
+              </div>
+              <button
+                type="button"
+                id="setting-kitchen-toggle-btn"
+                role="switch"
+                aria-checked={form.isKitchenOpen ?? true}
+                onClick={() => set('isKitchenOpen', !(form.isKitchenOpen ?? true))}
+                className={`relative px-4 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-2 cursor-pointer ${
+                  (form.isKitchenOpen ?? true)
+                    ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                    : 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    (form.isKitchenOpen ?? true) ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'
+                  }`}
+                />
+                <span>{(form.isKitchenOpen ?? true) ? 'Kitchens Open' : 'Kitchens Closed'}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+              <Field
+                id="setting-kitchen-open-text"
+                label="Open Badge Text"
+                hint="Default: Kitchens Open Now"
+              >
+                <input
+                  id="setting-kitchen-open-text"
+                  className={inputCls}
+                  value={form.kitchenOpenText || ''}
+                  maxLength={60}
+                  onChange={(e) => set('kitchenOpenText', e.target.value)}
+                  placeholder="Kitchens Open Now"
+                />
+              </Field>
+              <Field
+                id="setting-kitchen-closed-text"
+                label="Closed Badge Text"
+                hint="Default: Kitchens are now close"
+              >
+                <input
+                  id="setting-kitchen-closed-text"
+                  className={inputCls}
+                  value={form.kitchenClosedText || ''}
+                  maxLength={60}
+                  onChange={(e) => set('kitchenClosedText', e.target.value)}
+                  placeholder="Kitchens are now close"
+                />
+              </Field>
+            </div>
+          </section>
+
           {/* SEO */}
           <section className="bg-white/5 border border-white/8 rounded-3xl p-6 space-y-5">
             <h2 className="text-white font-extrabold text-lg flex items-center gap-2">🔎 Search Engines</h2>
@@ -327,6 +387,19 @@ export default function BrandSettingsForm({ initial }: { initial: SiteSettingsDa
                     {form.tagline}
                   </span>
                 </div>
+              </div>
+              <div>
+                {(form.isKitchenOpen ?? true) ? (
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{form.kitchenOpenText || 'Kitchens Open Now'}</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-rose-400" />
+                    <span>{form.kitchenClosedText || 'Kitchens are now close'}</span>
+                  </div>
+                )}
               </div>
               <p className="text-[11px] text-gray-500 border-t border-white/8 pt-3">
                 © {new Date().getFullYear()} {form.legalName || form.name} All rights reserved.

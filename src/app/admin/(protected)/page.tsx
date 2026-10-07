@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import KitchenStatusToggle from '@/components/admin/KitchenStatusToggle';
 
 interface Stats {
   totalRevenue: number;
@@ -142,9 +143,16 @@ export default function AdminDashboard() {
   return (
     <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 sm:mb-8">
-        <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Dashboard</h1>
-        <p className="text-gray-400 mt-1 text-xs sm:text-sm">Live overview of your restaurant</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Dashboard</h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-sm">Live overview of your restaurant</p>
+        </div>
+        <KitchenStatusToggle />
       </motion.div>
 
       {/* Stat Cards */}

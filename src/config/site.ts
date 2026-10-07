@@ -28,6 +28,12 @@ export interface SiteSettingsData {
   logoEmoji: string;
   /** Contact e-mail (also VAPID push-notification subject fallback) */
   email: string;
+  /** Whether the kitchen is currently open */
+  isKitchenOpen: boolean;
+  /** Display text when the kitchen is open (e.g. "Kitchens Open Now") */
+  kitchenOpenText: string;
+  /** Display text when the kitchen is closed (e.g. "Kitchens are now close") */
+  kitchenClosedText: string;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
@@ -40,6 +46,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
   logoUrl: '',
   logoEmoji: '🍔',
   email: 'admin@foodieexpress.bd',
+  isKitchenOpen: true,
+  kitchenOpenText: 'Kitchens Open Now',
+  kitchenClosedText: 'Kitchens are now close',
 };
 
 export const SITE_SETTINGS_FIELDS = Object.keys(DEFAULT_SITE_SETTINGS) as (keyof SiteSettingsData)[];

@@ -10,8 +10,50 @@ import { RestaurantLocation } from '@/data/locations';
 export default function Footer() {
   const site = useSiteSettings();
   const [locations, setLocations] = useState<RestaurantLocation[]>([]);
+  const [liveStatus, setLiveStatus] = useState<{
+    isKitchenOpen: boolean;
+    kitchenOpenText: string;
+    kitchenClosedText: string;
+  } | null>(null);
+
+  const isKitchenOpen = liveStatus ? liveStatus.isKitchenOpen : (site.isKitchenOpen ?? true);
+  const openText = liveStatus?.kitchenOpenText || site.kitchenOpenText || 'Kitchens Open Now';
+  const closedText = liveStatus?.kitchenClosedText || site.kitchenClosedText || 'Kitchens are now close';
   const currentYear = new Date().getFullYear();
   const [nameStart, nameHighlight, nameEnd] = splitBrandName(site.name, site.nameHighlight);
+
+  // Real-time status sync via public endpoint
+  useEffect(() => {
+    let isMounted = true;
+    const fetchKitchenStatus = async () => {
+      try {
+        const res = await fetch('/api/kitchen-status');
+        const d = await res.json();
+        if (isMounted && d.success && typeof d.isKitchenOpen === 'boolean') {
+          setLiveStatus({
+            isKitchenOpen: d.isKitchenOpen,
+            kitchenOpenText: d.kitchenOpenText,
+            kitchenClosedText: d.kitchenClosedText,
+          });
+        }
+      } catch {
+        // Keep using site settings if network fails
+      }
+    };
+
+    fetchKitchenStatus();
+    const interval = setInterval(fetchKitchenStatus, 30000);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') fetchKitchenStatus();
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     fetch('/api/locations')
@@ -61,10 +103,23 @@ export default function Footer() {
 
               {/* Status & Trust Badges */}
               <div className="flex flex-wrap items-center gap-2 pt-1">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Kitchens Open Now</span>
-                </div>
+                {isKitchenOpen ? (
+                  <div
+                    id="kitchen-status-badge"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold transition-all duration-300"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{openText}</span>
+                  </div>
+                ) : (
+                  <div
+                    id="kitchen-status-badge"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold transition-all duration-300"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-rose-400" />
+                    <span>{closedText}</span>
+                  </div>
+                )}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 text-xs font-medium">
                   <span>✨</span>
                   <span>100% Halal Certified</span>
