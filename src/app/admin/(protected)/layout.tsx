@@ -18,7 +18,7 @@ export default async function ProtectedAdminLayout({
       <AdminNotificationManager />
       <div className="flex-1 flex">
         <AdminSidebar />
-        <main className="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <main className="flex-1 ml-0 lg:ml-64 min-h-screen pt-16 lg:pt-0">
           {children}
         </main>
       </div>

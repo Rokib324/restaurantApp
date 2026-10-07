@@ -79,24 +79,24 @@ export default function BrandSettingsForm({ initial }: { initial: SiteSettingsDa
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-4 lg:px-10 py-8 max-w-7xl w-full">
+    <form onSubmit={handleSubmit} className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
       {/* ─── Header ───────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8"
       >
         <div>
           <span className="text-xs font-bold text-orange-400 uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-2.5 py-0.5 rounded-lg">
             White-label
           </span>
-          <h1 className="text-white text-3xl font-extrabold tracking-tight mt-2">Brand Settings</h1>
-          <p className="text-gray-400 mt-1 text-sm">
+          <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1.5 sm:mt-2">Brand Settings</h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-sm">
             Restaurant name, logo and identity used across the whole website.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
           <button
             type="button"
             id="reset-settings-btn"
@@ -105,7 +105,7 @@ export default function BrandSettingsForm({ initial }: { initial: SiteSettingsDa
               setForm(initial);
               setError(null);
             }}
-            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-sm font-semibold rounded-2xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs sm:text-sm font-semibold rounded-2xl transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             ↺ Discard
           </button>

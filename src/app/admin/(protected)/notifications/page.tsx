@@ -204,16 +204,16 @@ export default function AdminNotificationsPage() {
   };
 
   return (
-    <div className="px-6 lg:px-10 py-8 max-w-4xl">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-4xl w-full">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 sm:mb-8">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-xs font-bold text-orange-400 uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-2.5 py-0.5 rounded-lg">
             Instant Alerts
           </span>
         </div>
-        <h1 className="text-white text-3xl font-extrabold tracking-tight">Push Notifications</h1>
-        <p className="text-gray-400 mt-1 text-sm">
+        <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Push Notifications</h1>
+        <p className="text-gray-400 mt-1 text-xs sm:text-sm">
           Receive real-time alerts & chime sounds immediately whenever a customer places an order.
         </p>
       </motion.div>

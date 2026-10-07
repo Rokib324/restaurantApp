@@ -53,10 +53,10 @@ function Modal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
+          className="bg-gray-900 border border-white/10 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto"
         >
-          <div className="flex items-center justify-between px-7 py-5 border-b border-white/8">
-            <h2 className="text-white font-bold text-lg">{title}</h2>
+          <div className="flex items-center justify-between px-5 sm:px-7 py-4 sm:py-5 border-b border-white/8 sticky top-0 bg-gray-900/95 backdrop-blur z-10">
+            <h2 className="text-white font-bold text-base sm:text-lg">{title}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-xl hover:bg-white/10"
@@ -64,7 +64,7 @@ function Modal({
               ✕
             </button>
           </div>
-          <div className="px-7 py-6">{children}</div>
+          <div className="px-5 sm:px-7 py-5 sm:py-6">{children}</div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -394,31 +394,31 @@ export default function AdminMenuPage() {
 
   return (
     <>
-      <div className="px-6 lg:px-10 py-8 max-w-7xl">
+      <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div className="flex items-center justify-between">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-white text-3xl font-extrabold">Menu Items</h1>
-              <p className="text-gray-400 mt-1 text-sm">
+              <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Menu Items</h1>
+              <p className="text-gray-400 mt-1 text-xs sm:text-sm">
                 {items.length} items · {items.filter((i) => !i.isAvailable).length} unavailable
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
               <Link
                 href="/admin/categories"
-                className="flex items-center gap-1.5 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold rounded-2xl text-sm transition-colors"
+                className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold rounded-2xl text-xs sm:text-sm transition-colors"
                 title="Manage categories"
               >
                 <span>🏷️</span>
-                <span>Manage Categories</span>
+                <span>Categories</span>
               </Link>
               <motion.button
                 id="add-menu-item-btn"
                 onClick={() => { setShowAdd(true); setAddError(''); }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-2xl shadow-lg shadow-orange-500/20 text-sm"
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-2xl shadow-lg shadow-orange-500/20 text-xs sm:text-sm"
               >
                 ＋ Add Item
               </motion.button>

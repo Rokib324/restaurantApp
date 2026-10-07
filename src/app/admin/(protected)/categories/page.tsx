@@ -201,12 +201,12 @@ export default function AdminCategoriesPage() {
   const totalItemsCovered = categories.reduce((sum, c) => sum + (c.itemCount || 0), 0);
 
   return (
-    <div className="px-4 lg:px-10 py-8 max-w-7xl w-full">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
       {/* ─── Header ────────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8"
       >
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -214,16 +214,16 @@ export default function AdminCategoriesPage() {
               Menu Taxonomy
             </span>
           </div>
-          <h1 className="text-white text-3xl font-extrabold tracking-tight">Categories</h1>
-          <p className="text-gray-400 mt-1 text-sm">
+          <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Categories</h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-sm">
             Manage your food categories. Categories control the ordering filters on the homepage.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
           <button
             onClick={fetchCategories}
-            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-sm font-semibold rounded-2xl transition-all"
+            className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs sm:text-sm font-semibold rounded-2xl transition-all"
             title="Refresh categories"
           >
             🔄 Refresh
@@ -233,7 +233,7 @@ export default function AdminCategoriesPage() {
             onClick={openAdd}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-orange-500/20 flex items-center gap-2 hover:opacity-95 transition-all"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-orange-500/20 flex items-center gap-2 hover:opacity-95 transition-all"
           >
             <span>➕</span>
             <span>Add Category</span>

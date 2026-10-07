@@ -34,8 +34,8 @@ export default function Footer() {
         <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* ── Main Restaurant Footer ────────────────────────────────────────── */}
-        <div className="container mx-auto px-6 lg:px-12 pt-16 pb-12 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-12 pt-12 sm:pt-16 pb-8 sm:pb-12 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8">
             {/* Col 1: Brand & Bio (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
               <Link href="/" className="inline-flex items-center gap-3 group">

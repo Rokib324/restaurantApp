@@ -272,14 +272,14 @@ export default function AdminOrdersPage() {
 
   return (
     <>
-      <div className="px-4 lg:px-10 py-8 max-w-7xl w-full">
+      <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
 
         {/* ─── Header ──────────────────────────────────────────────────── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <h1 className="text-white text-3xl font-extrabold">Orders</h1>
-              <p className="text-gray-400 mt-1 text-sm">{total} orders · {rangeLabel}</p>
+              <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Orders</h1>
+              <p className="text-gray-400 mt-1 text-xs sm:text-sm">{total} orders · {rangeLabel}</p>
             </div>
             <div className="flex items-center gap-2">
               {/* View toggle */}
@@ -298,7 +298,7 @@ export default function AdminOrdersPage() {
               <button
                 id="refresh-orders-btn"
                 onClick={fetchOrders}
-                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-sm rounded-xl transition-all"
+                className="px-3.5 sm:px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs sm:text-sm rounded-xl transition-all"
               >
                 🔄 Refresh
               </button>
@@ -307,13 +307,13 @@ export default function AdminOrdersPage() {
         </motion.div>
 
         {/* ─── Time Range Tabs ─────────────────────────────────────────── */}
-        <div className="flex gap-1 bg-white/5 border border-white/8 rounded-2xl p-1 mb-4 flex-wrap">
+        <div className="flex gap-1.5 bg-white/5 border border-white/8 rounded-2xl p-1 mb-4 overflow-x-auto no-scrollbar sm:flex-wrap">
           {TIME_TABS.map((tab) => (
             <button
               key={tab.value}
               id={`time-${tab.value}`}
               onClick={() => setTimeRange(tab.value)}
-              className={`flex-1 min-w-fit px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+              className={`flex-1 min-w-fit px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
                 timeRange === tab.value
                   ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md shadow-orange-500/20'
                   : 'text-gray-400 hover:text-white'
@@ -326,7 +326,7 @@ export default function AdminOrdersPage() {
 
         {/* ─── Stats Cards ─────────────────────────────────────────────── */}
         {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 mb-6">
             {[
               { label: 'Revenue', value: `৳${(stats.totalRevenue || 0).toLocaleString()}`, color: 'text-orange-400', icon: '💰' },
               { label: 'Orders',  value: stats.totalOrders,    color: 'text-white',        icon: '🧾' },
@@ -334,25 +334,25 @@ export default function AdminOrdersPage() {
               { label: 'Prep',    value: stats.preparingOrders,color: 'text-yellow-400',   icon: '👨‍🍳' },
               { label: 'Done',    value: stats.deliveredOrders,color: 'text-green-400',    icon: '✅' },
             ].map((s) => (
-              <div key={s.label} className="bg-white/5 border border-white/8 rounded-2xl px-4 py-3">
+              <div key={s.label} className="bg-white/5 border border-white/8 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className="text-base">{s.icon}</span>
-                  <span className="text-gray-500 text-xs">{s.label}</span>
+                  <span className="text-sm sm:text-base">{s.icon}</span>
+                  <span className="text-gray-500 text-[11px] sm:text-xs">{s.label}</span>
                 </div>
-                <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
+                <p className={`text-base sm:text-lg font-bold ${s.color}`}>{s.value}</p>
               </div>
             ))}
           </div>
         )}
 
         {/* ─── Status filter ───────────────────────────────────────────── */}
-        <div className="flex gap-2 flex-wrap mb-5">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 sm:flex-wrap mb-5">
           {STATUS_FILTERS.map((f) => (
             <button
               key={f.value}
               id={`filter-${f.value}`}
               onClick={() => setFilterStatus(f.value)}
-              className={`px-4 py-1.5 rounded-xl text-sm font-medium transition-all ${
+              className={`px-3.5 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
                 filterStatus === f.value
                   ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
                   : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-transparent'
@@ -474,29 +474,34 @@ export default function AdminOrdersPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.02 }}
                   onClick={() => setSelectedOrder(order)}
-                  className={`bg-white/5 border ${st.border} rounded-2xl px-5 py-4 cursor-pointer hover:bg-white/8 transition-all`}
+                  className={`bg-white/5 border ${st.border} rounded-2xl p-4 sm:px-5 sm:py-4 cursor-pointer hover:bg-white/8 transition-all`}
                 >
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${st.bg} ${st.color} border ${st.border}`}>
-                      {st.icon} {st.label}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-white font-semibold text-sm truncate">{order.customerDetails.name}</p>
-                        <span className="text-gray-600 text-xs">·</span>
-                        <span className="text-blue-400 text-xs font-mono">{order.customerDetails.phone}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start sm:items-center gap-3 min-w-0">
+                      <span className={`flex-shrink-0 flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold ${st.bg} ${st.color} border ${st.border}`}>
+                        {st.icon} {st.label}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-white font-semibold text-sm truncate">{order.customerDetails.name}</p>
+                          <span className="text-gray-600 text-xs hidden sm:inline">·</span>
+                          <span className="text-blue-400 text-xs font-mono">{order.customerDetails.phone}</span>
+                        </div>
+                        <p className="text-gray-400 text-xs truncate mt-0.5">{order.customerDetails.address}</p>
                       </div>
-                      <p className="text-gray-400 text-xs truncate mt-0.5">{order.customerDetails.address}</p>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-orange-400 font-bold">৳{order.totalAmount.toLocaleString()}</p>
-                      <p className={`text-xs ${pay.color}`}>{pay.label}</p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-gray-400 text-xs">{timeAgo(order.createdAt)}</p>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0 flex-shrink-0">
+                      <div className="text-left sm:text-right">
+                        <p className="text-orange-400 font-bold text-sm sm:text-base">৳{order.totalAmount.toLocaleString()}</p>
+                        <p className={`text-[11px] sm:text-xs ${pay.color}`}>{pay.label}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-400 text-[11px] sm:text-xs">{timeAgo(order.createdAt)}</p>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-xs mt-2 truncate">
+                  <p className="text-gray-500 text-xs mt-2.5 truncate border-t border-white/5 pt-2">
                     {order.items.map((it) => `${it.name} ×${it.quantity}`).join(', ')}
                   </p>
                 </motion.div>

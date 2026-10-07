@@ -66,7 +66,7 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
       <Link href={`/items/${item._id}`} className="block">
         {/* Image container */}
         <div
-          className="relative h-48 overflow-hidden bg-gray-900"
+          className="relative h-44 xs:h-48 sm:h-52 overflow-hidden bg-gray-900"
           onMouseEnter={() => setImageHovered(true)}
           onMouseLeave={() => setImageHovered(false)}
         >
@@ -80,7 +80,7 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
               alt={item.name}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
               unoptimized={item.imageUrl.startsWith('/uploads/')}
             />
           </motion.div>
@@ -97,7 +97,7 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute top-3 right-3 w-6 h-6 bg-orange-500 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md"
+              className="absolute top-3 right-3 w-6 h-6 bg-orange-500 rounded-full text-white text-xs font-bold flex items-center justify-center shadow-md shadow-orange-500/40"
             >
               {cartQty}
             </motion.span>
@@ -105,27 +105,27 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="text-white font-bold text-base leading-tight group-hover:text-orange-400 transition-colors duration-200">
+            <h3 className="text-white font-bold text-sm sm:text-base leading-tight group-hover:text-orange-400 transition-colors duration-200">
               {item.name}
             </h3>
-            <span className="text-orange-400 font-extrabold text-lg whitespace-nowrap">
+            <span className="text-orange-400 font-extrabold text-base sm:text-lg whitespace-nowrap shrink-0">
               ৳{item.price}
             </span>
           </div>
 
-          <p className="text-gray-400 text-sm line-clamp-2 mb-4 leading-relaxed">
+          <p className="text-gray-400 text-xs sm:text-sm line-clamp-2 mb-3.5 sm:mb-4 leading-relaxed">
             {item.description}
           </p>
 
           {/* Tags */}
           {item.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
+            <div className="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
               {item.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-gray-400 text-xs capitalize"
+                  className="px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-gray-400 text-[11px] sm:text-xs capitalize"
                 >
                   #{tag}
                 </span>
@@ -136,13 +136,13 @@ const FoodCard = memo(function FoodCard({ item }: FoodCardProps) {
       </Link>
 
       {/* Add to Cart Button */}
-      <div className="px-5 pb-5">
+      <div className="px-4 pb-4 sm:px-5 sm:pb-5">
         <motion.button
           id={`add-to-cart-${item._id}`}
           onClick={handleAddToCart}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-200 ${
+          className={`w-full py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
             added
               ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
               : 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40'
@@ -205,14 +205,14 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
             className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden animate-pulse"
           >
-            <div className="h-48 bg-white/10" />
-            <div className="p-5 space-y-3">
+            <div className="h-44 xs:h-48 sm:h-52 bg-white/10" />
+            <div className="p-4 sm:p-5 space-y-3">
               <div className="h-4 bg-white/10 rounded-full w-3/4" />
               <div className="h-3 bg-white/10 rounded-full w-full" />
               <div className="h-3 bg-white/10 rounded-full w-2/3" />
@@ -226,12 +226,12 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
 
   if (error) {
     return (
-      <div className="text-center py-20">
-        <div className="text-5xl mb-4">⚠️</div>
-        <p className="text-red-400 text-lg">{error}</p>
+      <div className="text-center py-16 sm:py-20 px-4">
+        <div className="text-4xl sm:text-5xl mb-4">⚠️</div>
+        <p className="text-red-400 text-base sm:text-lg">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 px-6 py-2 bg-orange-500 text-white rounded-xl font-semibold cursor-pointer"
+          className="mt-4 px-6 py-2.5 bg-orange-500 text-white rounded-xl font-semibold text-sm cursor-pointer"
         >
           Retry
         </button>
@@ -241,9 +241,9 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
 
   if (filteredItems.length === 0) {
     return (
-      <div className="text-center py-20">
-        <div className="text-6xl mb-4">🍽️</div>
-        <p className="text-gray-400 text-lg">No items found in this category.</p>
+      <div className="text-center py-16 sm:py-20 px-4">
+        <div className="text-5xl sm:text-6xl mb-4">🍽️</div>
+        <p className="text-gray-400 text-base sm:text-lg">No items found in this category.</p>
       </div>
     );
   }
@@ -256,7 +256,7 @@ export default function FoodGrid({ activeCategory }: FoodGridProps) {
         initial="hidden"
         animate="visible"
         exit={{ opacity: 0 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
       >
         {filteredItems.map((item) => (
           <FoodCard key={item._id} item={item} />

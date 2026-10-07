@@ -198,26 +198,26 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-gray-950">
-      <div className="container mx-auto px-6 lg:px-12 py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-10 sm:py-16">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-extrabold text-white mb-12"
+          className="text-3xl sm:text-4xl font-extrabold text-white mb-8 sm:mb-12"
         >
           Checkout
         </motion.h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
           {/* Left - Form */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             {/* Customer Details */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white/5 border border-white/10 rounded-3xl p-8"
+              className="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-8"
             >
-              <h2 className="text-white font-bold text-xl mb-6 flex items-center gap-3">
+              <h2 className="text-white font-bold text-lg sm:text-xl mb-5 sm:mb-6 flex items-center gap-3">
                 <span className="w-8 h-8 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 font-extrabold text-sm">1</span>
                 Delivery Details
               </h2>
@@ -290,9 +290,9 @@ export default function CheckoutPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/5 border border-white/10 rounded-3xl p-8"
+              className="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-8"
             >
-              <h2 className="text-white font-bold text-xl mb-6 flex items-center gap-3">
+              <h2 className="text-white font-bold text-lg sm:text-xl mb-5 sm:mb-6 flex items-center gap-3">
                 <span className="w-8 h-8 bg-orange-500/20 rounded-xl flex items-center justify-center text-orange-400 font-extrabold text-sm">2</span>
                 Payment Method
               </h2>
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
               <div className="space-y-6">
                 {PAYMENT_GROUPS.map((group) => (
                   <div key={group.id}>
-                    <p className="text-gray-400 text-sm font-semibold mb-3">{group.label}</p>
+                    <p className="text-gray-400 text-xs sm:text-sm font-semibold mb-3">{group.label}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {group.methods.map((method) => {
                         const isSelected = selectedPayment === method.id;
@@ -312,7 +312,7 @@ export default function CheckoutPage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className={`
-                              relative flex items-start gap-4 p-5 rounded-2xl border-2 text-left transition-all duration-200
+                              relative flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl border-2 text-left transition-all duration-200 cursor-pointer
                               ${
                                 isSelected
                                   ? `${method.bgColor} ${method.borderColor} ${method.color}`
@@ -321,15 +321,15 @@ export default function CheckoutPage() {
                             `}
                           >
                             <span className="text-2xl flex-shrink-0">{method.emoji}</span>
-                            <div className="flex-1">
-                              <p className="font-bold text-sm">{method.name}</p>
-                              <p className="text-xs opacity-70 mt-0.5">{method.description}</p>
+                            <div className="flex-1 min-w-0 pr-4">
+                              <p className="font-bold text-xs sm:text-sm">{method.name}</p>
+                              <p className="text-[11px] sm:text-xs opacity-70 mt-0.5 leading-snug">{method.description}</p>
                             </div>
                             {isSelected && (
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="absolute top-3 right-3 w-5 h-5 rounded-full bg-current flex items-center justify-center"
+                                className="absolute top-3.5 right-3.5 w-5 h-5 rounded-full bg-current flex items-center justify-center"
                               >
                                 <span className="text-white text-xs font-bold">✓</span>
                               </motion.div>
@@ -349,10 +349,10 @@ export default function CheckoutPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-5 p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-sm text-blue-300"
+                    className="mt-5 p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-xs sm:text-sm text-blue-300"
                   >
                     <p className="font-semibold mb-1">📱 {selectedPayment === 'bkash' ? 'bKash' : 'Nagad'} Payment Instructions:</p>
-                    <p className="text-xs opacity-80">
+                    <p className="text-xs opacity-80 leading-relaxed">
                       After placing your order, you will receive a payment request to your registered number. Please complete the payment within 10 minutes to confirm your order.
                     </p>
                   </motion.div>
@@ -368,8 +368,8 @@ export default function CheckoutPage() {
             transition={{ delay: 0.3 }}
             className="lg:sticky lg:top-24 h-fit"
           >
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
-              <h2 className="text-white font-bold text-lg mb-6">Order Summary</h2>
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 sm:p-6">
+              <h2 className="text-white font-bold text-base sm:text-lg mb-5 sm:mb-6">Order Summary</h2>
 
               {/* Items */}
               <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">

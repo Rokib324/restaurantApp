@@ -140,29 +140,29 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="px-6 lg:px-10 py-8 max-w-7xl">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h1 className="text-white text-3xl font-extrabold">Dashboard</h1>
-        <p className="text-gray-400 mt-1 text-sm">Live overview of your restaurant</p>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6 sm:mb-8">
+        <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Dashboard</h1>
+        <p className="text-gray-400 mt-1 text-xs sm:text-sm">Live overview of your restaurant</p>
       </motion.div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
+      <div className="grid grid-cols-1 xs:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-5 mb-8 sm:mb-10">
         {STAT_CARDS.map((card, i) => (
           <motion.div
             key={card.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.07 }}
-            className={`bg-gradient-to-br ${card.gradient} border ${card.border} rounded-3xl p-6`}
+            className={`bg-gradient-to-br ${card.gradient} border ${card.border} rounded-2xl sm:rounded-3xl p-5 sm:p-6`}
           >
             <div className="flex items-start justify-between mb-3">
-              <p className="text-gray-400 text-sm">{card.label}</p>
-              <span className="text-2xl">{card.icon}</span>
+              <p className="text-gray-400 text-xs sm:text-sm font-medium">{card.label}</p>
+              <span className="text-xl sm:text-2xl">{card.icon}</span>
             </div>
-            <p className={`text-3xl font-extrabold ${card.color}`}>{card.value}</p>
-            <p className="text-gray-500 text-xs mt-1">{card.sub}</p>
+            <p className={`text-2xl sm:text-3xl font-extrabold ${card.color}`}>{card.value}</p>
+            <p className="text-gray-500 text-[11px] sm:text-xs mt-1">{card.sub}</p>
           </motion.div>
         ))}
       </div>
@@ -172,22 +172,22 @@ export default function AdminDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden"
+        className="bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden"
       >
-        <div className="px-6 py-5 border-b border-white/8 flex items-center justify-between">
-          <h2 className="text-white font-bold text-lg">Recent Orders</h2>
+        <div className="px-5 sm:px-6 py-4 sm:py-5 border-b border-white/8 flex items-center justify-between">
+          <h2 className="text-white font-bold text-base sm:text-lg">Recent Orders</h2>
           <div className="flex items-center gap-3">
             <motion.div
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="flex items-center gap-1.5 text-green-400 text-xs"
+              className="flex items-center gap-1.5 text-green-400 text-xs font-medium"
             >
               <span className="w-2 h-2 bg-green-400 rounded-full" />
               Live
             </motion.div>
             <Link
               href="/admin/orders"
-              className="text-orange-400 hover:text-orange-300 text-sm font-medium"
+              className="text-orange-400 hover:text-orange-300 text-xs sm:text-sm font-medium transition-colors"
             >
               View all →
             </Link>
@@ -197,35 +197,35 @@ export default function AdminDashboard() {
         {recentOrders.length === 0 ? (
           <div className="py-16 text-center">
             <div className="text-5xl mb-3">🧾</div>
-            <p className="text-gray-400">No orders yet</p>
+            <p className="text-gray-400 text-sm">No orders yet</p>
           </div>
         ) : (
           <div className="divide-y divide-white/5">
             {recentOrders.map((order) => {
               const status = STATUS_CONFIG[order.orderStatus] ?? STATUS_CONFIG.received;
               return (
-                <div key={order._id} className="px-6 py-4 hover:bg-white/3 transition-colors">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div key={order._id} className="px-4 sm:px-6 py-4 hover:bg-white/3 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     {/* Customer */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold ${status.bg} ${status.color}`}>
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-xs font-semibold ${status.bg} ${status.color}`}>
                           {status.icon} {status.label}
                         </span>
                         <span className="text-gray-500 text-xs">{timeAgo(order.createdAt)}</span>
                       </div>
                       <p className="text-white font-semibold text-sm">{order.customerDetails.name}</p>
                       <p className="text-gray-400 text-xs truncate">{order.customerDetails.address}</p>
-                      <p className="text-gray-500 text-xs mt-0.5">
+                      <p className="text-gray-500 text-xs mt-0.5 truncate">
                         {order.items.map(i => `${i.name} ×${i.quantity}`).join(', ')}
                       </p>
                     </div>
 
-                    {/* Amount & payment */}
-                    <div className="flex items-center gap-4 flex-shrink-0">
-                      <div className="text-right">
-                        <p className="text-orange-400 font-bold">৳{order.totalAmount}</p>
-                        <p className="text-gray-500 text-xs">{PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}</p>
+                    {/* Amount & payment & action */}
+                    <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0 flex-shrink-0">
+                      <div className="text-left sm:text-right">
+                        <p className="text-orange-400 font-bold text-sm sm:text-base">৳{order.totalAmount}</p>
+                        <p className="text-gray-500 text-[11px] sm:text-xs">{PAYMENT_LABELS[order.paymentMethod] ?? order.paymentMethod}</p>
                       </div>
 
                       {/* Quick status update */}

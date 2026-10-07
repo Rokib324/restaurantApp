@@ -119,26 +119,26 @@ export default function OrderTrackingPage({ params }: OrderTrackingPageProps) {
 
   return (
     <div className="min-h-screen pt-20 bg-gray-950">
-      <div className="container mx-auto px-6 lg:px-12 py-16 max-w-5xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-10 sm:py-16 max-w-5xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
+          className="mb-8 sm:mb-10"
         >
           <Link
             href="/"
-            className="text-gray-400 hover:text-orange-400 transition-colors text-sm mb-4 inline-block"
+            className="text-gray-400 hover:text-orange-400 transition-colors text-xs sm:text-sm mb-3 sm:mb-4 inline-block"
           >
             ← Back to Menu
           </Link>
-          <h1 className="text-4xl font-extrabold text-white mt-2">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mt-1 sm:mt-2">
             Order{' '}
             <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
               Tracking
             </span>
           </h1>
-          <p className="text-gray-400 mt-2">
+          <p className="text-gray-400 text-sm sm:text-base mt-2">
             Hi{' '}
             <span className="text-white font-semibold">{order.customerDetails.name}</span>!
             Here&apos;s the live status of your order.

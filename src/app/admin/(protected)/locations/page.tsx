@@ -354,12 +354,12 @@ export default function AdminLocationsPage() {
   const currentlyOpen = locations.filter((l) => l.isOpenNow).length;
 
   return (
-    <div className="px-4 lg:px-10 py-8 max-w-7xl w-full">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 max-w-7xl w-full">
       {/* ─── Header ───────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8"
       >
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -367,16 +367,16 @@ export default function AdminLocationsPage() {
               Outlets &amp; Hubs
             </span>
           </div>
-          <h1 className="text-white text-3xl font-extrabold tracking-tight">Locations Management</h1>
-          <p className="text-gray-400 mt-1 text-sm">
+          <h1 className="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">Locations Management</h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-sm">
             Add and update restaurant branches, phone numbers, map coordinates, and operating hours.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
           <button
             onClick={fetchLocations}
-            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-sm font-semibold rounded-2xl transition-all flex items-center gap-2"
+            className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 text-xs sm:text-sm font-semibold rounded-2xl transition-all flex items-center gap-2"
             title="Refresh locations"
           >
             <span>🔄</span>
@@ -387,7 +387,7 @@ export default function AdminLocationsPage() {
             onClick={openAdd}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-orange-500/20 flex items-center gap-2 hover:opacity-95 transition-all"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-orange-500/20 flex items-center gap-2 hover:opacity-95 transition-all"
           >
             <span>➕</span>
             <span>Add Location</span>
@@ -622,12 +622,12 @@ export default function AdminLocationsPage() {
       {/* ─── ADD / EDIT MODAL ────────────────────────────────────────────── */}
       <AnimatePresence>
         {(showAddModal || editingLocation) && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-gray-900 border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full my-8 shadow-2xl relative"
+              className="bg-gray-900 border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 max-w-2xl w-full my-6 sm:my-8 shadow-2xl relative"
             >
               <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                 <div>

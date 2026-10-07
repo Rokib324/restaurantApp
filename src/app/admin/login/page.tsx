@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4 sm:px-6 py-8">
       {/* Background gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/8 rounded-full blur-3xl" />
@@ -54,14 +54,14 @@ export default function AdminLoginPage() {
         className="relative w-full max-w-md"
       >
         {/* Card */}
-        <div className="bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
+        <div className="bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl">
           {/* Logo / Icon */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-lg shadow-orange-500/30 mb-5">
-              <BrandLogo size={48} />
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl sm:rounded-3xl mx-auto flex items-center justify-center text-3xl sm:text-4xl shadow-lg shadow-orange-500/30 mb-4 sm:mb-5">
+              <BrandLogo size={40} />
             </div>
-            <h1 className="text-white text-3xl font-extrabold">Admin Panel</h1>
-            <p className="text-gray-400 text-sm mt-2">{site.name} Restaurant</p>
+            <h1 className="text-white text-2xl sm:text-3xl font-extrabold">Admin Panel</h1>
+            <p className="text-gray-400 text-xs sm:text-sm mt-1 sm:mt-2">{site.name} Restaurant</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

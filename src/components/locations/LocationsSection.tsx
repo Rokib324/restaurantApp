@@ -81,6 +81,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
   const [geoError, setGeoError] = useState<string | null>(null);
+  const [mobileView, setMobileView] = useState<'list' | 'map'>('list');
 
   // Filter locations based on search and feature tags
   const filteredLocations = useMemo(() => {
@@ -136,6 +137,8 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
 
         setSelectedLocationId(nearestLoc.id || nearestLoc.slug);
         setLocating(false);
+        // On mobile, auto-switch to map view so the user sees the branch
+        setMobileView('map');
       },
       () => {
         setLocating(false);
@@ -146,36 +149,36 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
   };
 
   return (
-    <section id="locations-section" className="py-24 relative overflow-hidden bg-gray-950">
+    <section id="locations-section" className="py-14 sm:py-20 lg:py-24 relative overflow-hidden bg-gray-950">
       {/* Background glow accents */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold uppercase tracking-wider mb-3">
               <span>📍 Find Us in Dhaka</span>
             </div>
-            <h2 className="text-3xl lg:text-5xl font-extrabold text-white">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white">
               Multiple Hubs,{' '}
               <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
                 One Fast Taste.
               </span>
             </h2>
-            <p className="text-gray-400 text-base mt-2 max-w-xl">
+            <p className="text-gray-400 text-sm sm:text-base mt-2 max-w-xl leading-relaxed">
               Visit our vibrant dining spots or order delivery right to your doorstep anywhere in Dhaka.
             </p>
           </div>
 
           {/* Locate Nearest Button */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button
               id="locate-nearest-btn"
               onClick={handleFindNearest}
               disabled={locating || locations.length === 0}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 text-white font-semibold text-sm transition-all shadow-md cursor-pointer disabled:opacity-50"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 hover:border-orange-500/50 hover:bg-orange-500/10 text-white font-semibold text-xs sm:text-sm transition-all shadow-md cursor-pointer disabled:opacity-50"
             >
               <span>{locating ? '⏳' : '🎯'}</span>
               <span>{locating ? 'Locating You...' : 'Find Nearest Branch'}</span>
@@ -196,7 +199,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
         )}
 
         {/* Filter and Search Bar */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
           {/* Search Input */}
           <div className="relative flex-1">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
@@ -208,7 +211,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search area, branch name, address, or phone..."
-              className="w-full pl-12 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-orange-500/50 transition-colors"
+              className="w-full pl-12 pr-4 py-3 sm:py-3.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-gray-500 text-xs sm:text-sm focus:outline-none focus:border-orange-500/50 transition-colors"
             />
             {searchQuery && (
               <button
@@ -221,7 +224,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
           </div>
 
           {/* Filter Pills */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex overflow-x-auto sm:flex-wrap gap-2 no-scrollbar pb-1 sm:pb-0 scroll-smooth -mx-1 px-1">
             {[
               { id: 'all', label: 'All Branches' },
               { id: '24/7', label: '🌙 24/7 Delivery' },
@@ -234,7 +237,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
                   key={tab.id}
                   id={`location-filter-${tab.id}`}
                   onClick={() => setFilterType(tab.id as typeof filterType)}
-                  className={`px-4 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border ${
+                  className={`px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer border shrink-0 sm:shrink whitespace-nowrap ${
                     isActive
                       ? 'bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20'
                       : 'bg-white/5 text-gray-300 border-white/10 hover:border-white/20 hover:text-white'
@@ -247,10 +250,38 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
           </div>
         </div>
 
+        {/* Mobile View Switcher (Visible only on mobile/tablet screens < lg) */}
+        <div className="flex lg:hidden bg-white/5 border border-white/10 rounded-2xl p-1 mb-6">
+          <button
+            id="mobile-locations-tab-list"
+            onClick={() => setMobileView('list')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'list'
+                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md shadow-orange-500/20'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <span>📋</span>
+            <span>Branch List ({filteredLocations.length})</span>
+          </button>
+          <button
+            id="mobile-locations-tab-map"
+            onClick={() => setMobileView('map')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'map'
+                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md shadow-orange-500/20'
+                : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <span>🗺️</span>
+            <span>Interactive Map</span>
+          </button>
+        </div>
+
         {/* Main Content Grid: Locations List (Left) + Interactive Map (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           {/* Left Column: Branch Cards List */}
-          <div className="lg:col-span-5 space-y-4 max-h-[640px] overflow-y-auto pr-1">
+          <div className={`${mobileView === 'list' ? 'block' : 'hidden'} lg:block lg:col-span-5 space-y-4 max-h-[640px] overflow-y-auto pr-1`}>
             <AnimatePresence>
               {loading && locations.length === 0 ? (
                 <div className="flex items-center justify-center py-24 bg-white/3 border border-white/8 rounded-3xl">
@@ -391,6 +422,18 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
 
                       {/* Action Links */}
                       <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLocationId(loc.id || loc.slug);
+                            setMobileView('map');
+                          }}
+                          className="lg:hidden py-2 px-3 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 font-bold text-xs text-center transition-colors flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>🗺️</span>
+                          <span>Map</span>
+                        </button>
                         <a
                           href={
                             loc.googleMapsUrl ||
@@ -420,7 +463,7 @@ export default function LocationsSection({ initialLocations }: LocationsSectionP
           </div>
 
           {/* Right Column: Interactive Leaflet / OSM Map */}
-          <div className="lg:col-span-7 h-[640px] sticky top-24">
+          <div className={`${mobileView === 'map' ? 'block' : 'hidden'} lg:block lg:col-span-7 h-[420px] sm:h-[500px] lg:h-[640px] lg:sticky lg:top-24`}>
             <RestaurantMap
               locations={filteredLocations}
               activeLocation={activeLocation}

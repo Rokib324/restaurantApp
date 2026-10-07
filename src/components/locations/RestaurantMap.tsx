@@ -17,6 +17,7 @@ export default function RestaurantMap({
 }: RestaurantMapProps) {
   const [zoomLevel, setZoomLevel] = useState<'street' | 'neighborhood'>('street');
   const [loadedKey, setLoadedKey] = useState<string>('');
+  const [isCardMinimized, setIsCardMinimized] = useState<boolean>(false);
 
   const currentLoc = activeLocation || locations[0] || null;
 
@@ -43,12 +44,12 @@ export default function RestaurantMap({
 
   if (!currentLoc && locations.length === 0) {
     return (
-      <div className="relative w-full h-full min-h-[500px] lg:min-h-[640px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900 flex flex-col items-center justify-center p-8 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-3xl mb-4">
+      <div className="relative w-full h-[380px] sm:h-[480px] lg:h-full lg:min-h-[640px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900 flex flex-col items-center justify-center p-6 sm:p-8 text-center">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-2xl sm:text-3xl mb-4">
           🗺️
         </div>
-        <h3 className="text-white text-lg font-bold mb-1">No Locations to Display</h3>
-        <p className="text-gray-400 text-sm max-w-sm">
+        <h3 className="text-white text-base sm:text-lg font-bold mb-1">No Locations to Display</h3>
+        <p className="text-gray-400 text-xs sm:text-sm max-w-sm">
           No restaurant branch matches your criteria. Select another filter or add locations in the Admin Panel.
         </p>
       </div>
@@ -56,7 +57,7 @@ export default function RestaurantMap({
   }
 
   return (
-    <div className="relative w-full h-full min-h-[500px] lg:min-h-[640px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900 flex flex-col">
+    <div className="relative w-full h-[400px] sm:h-[480px] lg:h-full lg:min-h-[640px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-gray-900 flex flex-col">
       {/* Top Header & Branch Switcher Bar */}
       <div className="bg-gray-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3 z-20 flex flex-wrap items-center justify-between gap-2">
         {/* Hub status badge */}
@@ -168,69 +169,84 @@ export default function RestaurantMap({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-20 bg-gray-950/90 backdrop-blur-xl border border-white/15 p-4 rounded-2xl shadow-2xl"
+            className="absolute bottom-3 left-3 right-3 sm:left-4 sm:right-auto sm:max-w-sm lg:max-w-md z-20 bg-gray-950/95 backdrop-blur-xl border border-white/15 p-3 sm:p-4 rounded-2xl shadow-2xl"
           >
-            <div className="flex items-start justify-between gap-3 mb-1.5">
+            <div className="flex items-start justify-between gap-2 mb-1.5">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded-md inline-block mb-1">
                   📍 {currentLoc.area} Branch
                 </span>
-                <h4 className="text-white font-extrabold text-sm sm:text-base leading-tight">
+                <h4 className="text-white font-extrabold text-xs sm:text-base leading-tight">
                   {currentLoc.name}
                 </h4>
               </div>
-              <span
-                className={`px-2 py-0.5 rounded-full text-xs font-bold border flex items-center gap-1 flex-shrink-0 ${
-                  currentLoc.isOpenNow
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                    : 'bg-red-500/20 text-red-400 border-red-500/30'
-                }`}
-              >
+              <div className="flex items-center gap-1.5 flex-shrink-0">
                 <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    currentLoc.isOpenNow ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
+                  className={`px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold border flex items-center gap-1 ${
+                    currentLoc.isOpenNow
+                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                      : 'bg-red-500/20 text-red-400 border-red-500/30'
                   }`}
-                />
-                {currentLoc.isOpenNow ? 'Open Now' : 'Closed'}
-              </span>
-            </div>
-
-            <p className="text-gray-400 text-xs line-clamp-2 mb-2">
-              {currentLoc.address}
-            </p>
-
-            {/* Direct hotline display */}
-            <div className="bg-white/5 border border-white/8 rounded-xl px-2.5 py-1.5 mb-2.5 flex items-center justify-between text-xs">
-              <span className="text-gray-400 text-[11px]">
-                Hotline: <strong className="text-orange-400 font-bold">{currentLoc.phone}</strong>
-              </span>
-              <a
-                href={`tel:${currentLoc.phone}`}
-                className="text-[11px] font-bold text-orange-300 hover:text-orange-200 underline"
-              >
-                Call Branch
-              </a>
-            </div>
-
-            <div className="flex items-center justify-between text-xs text-gray-300 pt-2 border-t border-white/10 gap-2 flex-wrap">
-              <span className="text-gray-400 text-[11px]">🕒 {currentLoc.hours}</span>
-              <div className="flex items-center gap-2">
-                <a
-                  href={`tel:${currentLoc.phone}`}
-                  className="text-white bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-colors"
                 >
-                  📞 Call
-                </a>
-                <a
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white bg-orange-500 hover:bg-orange-600 px-3 py-1 rounded-lg font-bold text-[11px] transition-colors shadow-sm"
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      currentLoc.isOpenNow ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'
+                    }`}
+                  />
+                  {currentLoc.isOpenNow ? 'Open' : 'Closed'}
+                </span>
+                {/* Mobile minimize/expand button */}
+                <button
+                  onClick={() => setIsCardMinimized(!isCardMinimized)}
+                  className="sm:hidden w-6 h-6 rounded-lg bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center text-xs font-bold cursor-pointer"
+                  title={isCardMinimized ? 'Expand info' : 'Minimize info'}
+                  aria-label={isCardMinimized ? 'Expand info card' : 'Minimize info card'}
                 >
-                  Directions ↗
-                </a>
+                  {isCardMinimized ? '+' : '−'}
+                </button>
               </div>
             </div>
+
+            {!isCardMinimized && (
+              <>
+                <p className="text-gray-400 text-[11px] sm:text-xs line-clamp-2 mb-2">
+                  {currentLoc.address}
+                </p>
+
+                {/* Direct hotline display */}
+                <div className="bg-white/5 border border-white/8 rounded-xl px-2.5 py-1.5 mb-2 flex items-center justify-between text-xs">
+                  <span className="text-gray-400 text-[10px] sm:text-[11px]">
+                    Hotline: <strong className="text-orange-400 font-bold">{currentLoc.phone}</strong>
+                  </span>
+                  <a
+                    href={`tel:${currentLoc.phone}`}
+                    className="text-[10px] sm:text-[11px] font-bold text-orange-300 hover:text-orange-200 underline"
+                  >
+                    Call Branch
+                  </a>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-gray-300 pt-1.5 border-t border-white/10 gap-2 flex-wrap">
+                  <span className="text-gray-400 text-[10px] sm:text-[11px]">🕒 {currentLoc.hours}</span>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`tel:${currentLoc.phone}`}
+                      className="text-white bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-lg font-semibold text-[11px] transition-colors"
+                    >
+                      📞 Call
+                    </a>
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white bg-orange-500 hover:bg-orange-600 px-3 py-1 rounded-lg font-bold text-[11px] transition-colors shadow-sm"
+                    >
+                      Directions ↗
+                    </a>
+                  </div>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </div>

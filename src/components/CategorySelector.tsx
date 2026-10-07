@@ -55,7 +55,7 @@ export default function CategorySelector() {
   }, []);
 
   return (
-    <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+    <div className="flex overflow-x-auto sm:flex-wrap gap-2 sm:gap-3 justify-start sm:justify-center lg:justify-start no-scrollbar pb-2 sm:pb-0 scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0">
       {categories.map((cat, index) => {
         const isActive = activeCategory === cat.id;
         return (
@@ -69,8 +69,8 @@ export default function CategorySelector() {
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.96 }}
             className={`
-              relative flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm
-              transition-all duration-300 border cursor-pointer
+              relative flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-semibold text-xs sm:text-sm
+              transition-all duration-300 border cursor-pointer shrink-0 sm:shrink whitespace-nowrap
               ${
                 isActive
                   ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-transparent shadow-lg shadow-orange-500/30'
@@ -78,7 +78,7 @@ export default function CategorySelector() {
               }
             `}
           >
-            <span className="text-base">{cat.emoji}</span>
+            <span className="text-sm sm:text-base">{cat.emoji}</span>
             <span>{cat.label}</span>
             {isActive && (
               <motion.div
