@@ -5,10 +5,13 @@ import { RESTAURANT_LOCATIONS, RestaurantLocation } from '@/data/locations';
 
 export const LOCATIONS_CACHE_TAG = 'locations-list';
 
+let hasSeeded = false;
+
 /**
  * Ensures existing static locations are seeded into the database on first run.
  */
 export async function seedDefaultLocationsIfNeeded() {
+  if (hasSeeded) return;
   try {
     await dbConnect();
     const count = await Location.countDocuments();
@@ -34,8 +37,55 @@ export async function seedDefaultLocationsIfNeeded() {
       await Location.insertMany(docs);
       console.log('Successfully seeded default restaurant locations into MongoDB');
     }
+    hasSeeded = true;
   } catch (error) {
     console.error('Error seeding default locations:', error);
+  }
+}
+
+/**
+ * Fast direct fetch of all locations for admin console (Server Component usage).
+ */
+export async function getAllLocationsAdmin() {
+  try {
+    await dbConnect();
+    await seedDefaultLocationsIfNeeded();
+
+    const docs = await Location.find({}).sort({ order: 1, createdAt: 1 }).lean();
+    if (!docs || docs.length === 0) {
+      return [];
+    }
+
+    return docs.map((d) => {
+      const doc = d as unknown as Record<string, unknown>;
+      const coords = (doc.coordinates as number[]) || [23.8103, 90.4125];
+      return {
+        _id: String(doc._id),
+        name: String(doc.name || ''),
+        slug: String(doc.slug || ''),
+        area: String(doc.area || ''),
+        address: String(doc.address || ''),
+        phone: String(doc.phone || ''),
+        hours: String(doc.hours || ''),
+        coordinates: [Number(coords[0]), Number(coords[1])] as [number, number],
+        isOpenNow: doc.isOpenNow !== false,
+        is24HoursDelivery: !!doc.is24HoursDelivery,
+        features: Array.isArray(doc.features) ? (doc.features as string[]) : [],
+        rating: Number(doc.rating) || 4.8,
+        reviewsCount: Number(doc.reviewsCount) || 100,
+        googleMapsUrl:
+          (doc.googleMapsUrl as string) ||
+          `https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}`,
+        popularDish: String(doc.popularDish || ''),
+        order: Number(doc.order) || 0,
+        isActive: doc.isActive !== false,
+        createdAt: doc.createdAt ? new Date(doc.createdAt as string | number | Date).toISOString() : undefined,
+        updatedAt: doc.updatedAt ? new Date(doc.updatedAt as string | number | Date).toISOString() : undefined,
+      };
+    });
+  } catch (error) {
+    console.error('getAllLocationsAdmin error:', error);
+    return [];
   }
 }
 

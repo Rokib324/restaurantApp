@@ -50,7 +50,6 @@ const LocationSchema = new Schema<ILocation>(
   { timestamps: true }
 );
 
-LocationSchema.index({ slug: 1 }, { unique: true });
 LocationSchema.index({ order: 1, createdAt: 1 });
 LocationSchema.index({ isActive: 1 });
 
