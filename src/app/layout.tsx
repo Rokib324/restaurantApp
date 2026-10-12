@@ -43,7 +43,7 @@ export default async function RootLayout({
   const site = await getSiteSettings();
 
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
       <body className="bg-gray-950 text-white antialiased min-h-screen">
         <SiteSettingsProvider value={site}>
           <ConditionalShell>{children}</ConditionalShell>
