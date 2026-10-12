@@ -125,6 +125,58 @@ export default function Footer() {
                   <span>100% Halal Certified</span>
                 </div>
               </div>
+
+              {/* Social Media Links */}
+              <div className="flex items-center gap-2 pt-2">
+                {site.facebookUrl && (
+                  <a
+                    href={site.facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-[#1877F2] text-gray-300 hover:text-white border border-white/10 flex items-center justify-center text-xs font-bold transition-all shadow-sm"
+                    title="Facebook Page"
+                    aria-label="Visit Facebook Page"
+                  >
+                    f
+                  </a>
+                )}
+                {site.googleReviewUrl && (
+                  <a
+                    href={site.googleReviewUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white text-gray-300 hover:text-gray-900 border border-white/10 flex items-center justify-center text-xs font-bold transition-all shadow-sm"
+                    title="Google Reviews & Maps"
+                    aria-label="Google Reviews"
+                  >
+                    G
+                  </a>
+                )}
+                {site.instagramUrl && (
+                  <a
+                    href={site.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-500 hover:to-purple-600 text-gray-300 hover:text-white border border-white/10 flex items-center justify-center text-xs transition-all shadow-sm"
+                    title="Instagram Profile"
+                    aria-label="Visit Instagram Profile"
+                  >
+                    📸
+                  </a>
+                )}
+                {site.whatsappNumber && (
+                  <a
+                    href={`https://wa.me/${site.whatsappNumber.replace(/[^0-9]/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-emerald-600 text-gray-300 hover:text-white border border-white/10 flex items-center justify-center text-xs transition-all shadow-sm"
+                    title="WhatsApp Hotline"
+                    aria-label="Chat on WhatsApp"
+                  >
+                    💬
+                  </a>
+                )}
+              </div>
             </div>
 
             {/* Col 2: Navigation Links (2 cols) */}
@@ -281,6 +333,9 @@ export default function Footer() {
               </Link>
               <Link href="/#locations-section" className="hover:text-gray-300 transition-colors">
                 Locations
+              </Link>
+              <Link href="/#reviews-section" className="hover:text-gray-300 transition-colors">
+                Reviews
               </Link>
               <Link href="/admin/login" className="hover:text-gray-300 transition-colors">
                 Staff & Admin Portal

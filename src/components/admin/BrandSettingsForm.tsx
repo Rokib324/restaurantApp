@@ -329,6 +329,75 @@ export default function BrandSettingsForm({ initial }: { initial: SiteSettingsDa
             </div>
           </section>
 
+          {/* Social Media & Review Links */}
+          <section className="bg-white/5 border border-white/8 rounded-3xl p-6 space-y-5">
+            <div>
+              <h2 className="text-white font-extrabold text-lg flex items-center gap-2">🌐 Social Media & Reviews</h2>
+              <p className="text-gray-400 text-xs mt-0.5">
+                Official social handles and review links displayed in the customer review section and website footer.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <Field
+                id="setting-facebook"
+                label="Facebook Page URL"
+                hint="e.g. https://facebook.com/foodieexpressbd"
+              >
+                <input
+                  id="setting-facebook"
+                  type="url"
+                  className={inputCls}
+                  value={form.facebookUrl || ''}
+                  onChange={(e) => set('facebookUrl', e.target.value)}
+                  placeholder="https://facebook.com/your-page"
+                />
+              </Field>
+              <Field
+                id="setting-google-review"
+                label="Google Maps / Review URL"
+                hint="e.g. https://maps.google.com/?q=FoodieExpress+Dhaka"
+              >
+                <input
+                  id="setting-google-review"
+                  type="url"
+                  className={inputCls}
+                  value={form.googleReviewUrl || ''}
+                  onChange={(e) => set('googleReviewUrl', e.target.value)}
+                  placeholder="https://maps.google.com/..."
+                />
+              </Field>
+              <Field
+                id="setting-instagram"
+                label="Instagram Profile URL"
+                hint="e.g. https://instagram.com/foodieexpressbd"
+              >
+                <input
+                  id="setting-instagram"
+                  type="url"
+                  className={inputCls}
+                  value={form.instagramUrl || ''}
+                  onChange={(e) => set('instagramUrl', e.target.value)}
+                  placeholder="https://instagram.com/your-handle"
+                />
+              </Field>
+              <Field
+                id="setting-whatsapp"
+                label="WhatsApp Order Number / Link"
+                hint="e.g. +880 1711-001122"
+              >
+                <input
+                  id="setting-whatsapp"
+                  type="text"
+                  className={inputCls}
+                  value={form.whatsappNumber || ''}
+                  onChange={(e) => set('whatsappNumber', e.target.value)}
+                  placeholder="+880 1711-001122"
+                />
+              </Field>
+            </div>
+          </section>
+
           {/* SEO */}
           <section className="bg-white/5 border border-white/8 rounded-3xl p-6 space-y-5">
             <h2 className="text-white font-extrabold text-lg flex items-center gap-2">🔎 Search Engines</h2>

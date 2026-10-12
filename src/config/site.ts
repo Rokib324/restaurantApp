@@ -34,6 +34,14 @@ export interface SiteSettingsData {
   kitchenOpenText: string;
   /** Display text when the kitchen is closed (e.g. "Kitchens are now close") */
   kitchenClosedText: string;
+  /** Official Facebook page URL */
+  facebookUrl: string;
+  /** Google Maps / Google Reviews URL */
+  googleReviewUrl: string;
+  /** Official Instagram profile URL */
+  instagramUrl: string;
+  /** Customer support WhatsApp number or link */
+  whatsappNumber: string;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
@@ -49,6 +57,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettingsData = {
   isKitchenOpen: true,
   kitchenOpenText: 'Kitchens Open Now',
   kitchenClosedText: 'Kitchens are now close',
+  facebookUrl: 'https://facebook.com/foodieexpressbd',
+  googleReviewUrl: 'https://maps.google.com/?q=FoodieExpress+Dhaka',
+  instagramUrl: 'https://instagram.com/foodieexpressbd',
+  whatsappNumber: '+880 1711-001122',
 };
 
 export const SITE_SETTINGS_FIELDS = Object.keys(DEFAULT_SITE_SETTINGS) as (keyof SiteSettingsData)[];

@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: '/admin/menu', label: 'Menu Items', icon: '🍔', id: 'nav-menu' },
   { href: '/admin/categories', label: 'Categories', icon: '🏷️', id: 'nav-categories' },
   { href: '/admin/locations', label: 'Locations', icon: '📍', id: 'nav-locations' },
+  { href: '/admin/reviews', label: 'Reviews', icon: '⭐', id: 'nav-reviews' },
   { href: '/admin/notifications', label: 'Notifications', icon: '🔔', id: 'nav-notifications' },
   { href: '/admin/settings', label: 'Brand Settings', icon: '⚙️', id: 'nav-settings' },
 ];

@@ -5,6 +5,7 @@ import Hero from '@/components/Hero';
 import CategorySelector from '@/components/CategorySelector';
 import FoodGrid from '@/components/FoodGrid';
 import LocationsSection from '@/components/locations/LocationsSection';
+import ReviewsSection from '@/components/reviews/ReviewsSection';
 import { motion } from 'framer-motion';
 import { useSiteSettings } from '@/components/providers/SiteSettingsProvider';
 
@@ -122,6 +123,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Reviews & Social Proof Section (Directly before Footer) */}
+      <ReviewsSection />
     </>
   );
 }

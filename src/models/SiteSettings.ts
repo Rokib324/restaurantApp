@@ -24,6 +24,10 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     isKitchenOpen: { type: Boolean, default: d.isKitchenOpen },
     kitchenOpenText: { type: String, default: d.kitchenOpenText, trim: true, maxlength: 80 },
     kitchenClosedText: { type: String, default: d.kitchenClosedText, trim: true, maxlength: 80 },
+    facebookUrl: { type: String, default: d.facebookUrl, trim: true },
+    googleReviewUrl: { type: String, default: d.googleReviewUrl, trim: true },
+    instagramUrl: { type: String, default: d.instagramUrl, trim: true },
+    whatsappNumber: { type: String, default: d.whatsappNumber, trim: true },
   },
   { timestamps: true }
 );

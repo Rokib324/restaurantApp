@@ -74,6 +74,13 @@ export default function Navbar() {
               <span>📍</span>
               <span>Locations</span>
             </Link>
+            <Link
+              href="/#reviews-section"
+              className="hover:text-orange-400 transition-colors flex items-center gap-1.5 py-1"
+            >
+              <span>⭐</span>
+              <span>Reviews</span>
+            </Link>
             <Link href="/checkout" className="hover:text-orange-400 transition-colors py-1">
               Checkout
             </Link>
@@ -181,6 +188,18 @@ export default function Navbar() {
                     <span className="flex items-center gap-3">
                       <span>📍</span>
                       <span>Find Dhaka Hubs</span>
+                    </span>
+                    <span className="text-gray-500 text-sm">→</span>
+                  </Link>
+
+                  <Link
+                    href="/#reviews-section"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/5 text-gray-200 hover:text-orange-400 hover:bg-orange-500/10 transition-colors text-base font-semibold"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span>⭐</span>
+                      <span>Customer Reviews</span>
                     </span>
                     <span className="text-gray-500 text-sm">→</span>
                   </Link>
